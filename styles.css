@@ -82,10 +82,20 @@
 
     .login-brand {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 22px;
+    }
+
+    .login-logo {
+      width: min(220px, 70vw);
+      height: auto;
+      object-fit: contain;
+      border-radius: 14px;
+      background: #fff;
+      padding: 8px 12px;
     }
 
     .login-brand .logo-mark {
@@ -97,7 +107,7 @@
     }
 
     .login-brand-name {
-      font-size: 1.85rem;
+      font-size: 1.35rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1;
@@ -233,9 +243,20 @@
 
     .logo {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 10px 36px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 0 10px 28px;
+    }
+
+    .sidebar-logo {
+      width: 100%;
+      max-width: 180px;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #fff;
+      padding: 6px 8px;
     }
 
     .logo-mark {
@@ -251,7 +272,7 @@
     }
 
     .logo-text {
-      font-size: 1.35rem;
+      font-size: 1rem;
       font-weight: 700;
       letter-spacing: -0.02em;
     }

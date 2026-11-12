@@ -264,7 +264,7 @@ const pageTitles = {
 };
 
 let settingsState = {
-  salonName: "Hair. Kampala",
+  salonName: "DK Mobile Salon",
   owner: "Admin User",
   phone: "+256 700 000 000",
   email: "hello@hair.ug",
@@ -331,6 +331,9 @@ function loadStore() {
     if (Array.isArray(data.reviews)) reviews = data.reviews;
     if (data.settingsState && typeof data.settingsState === "object") {
       settingsState = { ...settingsState, ...data.settingsState };
+      if (!settingsState.salonName || /Hair\.|Ladies\. Kampala|Appoint Hub/i.test(settingsState.salonName)) {
+        settingsState.salonName = "DK Mobile Salon";
+      }
     }
     if (Array.isArray(data.stylistsPage1)) stylistsPage1 = data.stylistsPage1;
     if (Array.isArray(data.stylistsPage2)) stylistsPage2 = data.stylistsPage2;
@@ -416,7 +419,7 @@ function unlockApp() {
   clearPinError();
   const logoText = document.querySelector(".logo-text");
   if (logoText && settingsState.salonName) logoText.textContent = settingsState.salonName;
-  document.title = `${settingsState.salonName || "Hair."} — Salon Booking`;
+  document.title = `${settingsState.salonName || "DK Mobile Salon"} — Desk`;
 }
 
 function lockApp() {
@@ -1018,7 +1021,7 @@ function printReceipt(payment, appt) {
       <div class="receipt-row"><span>Stylist</span><strong>${appt?.master || "—"}</strong></div>
       <div class="receipt-row"><span>Method</span><strong>${payment.method}</strong></div>
       <div class="receipt-total"><span>Total</span><span>${payment.amount}</span></div>
-      <p class="muted" style="margin-top:20px;text-align:center;">Thank you for visiting Hair.</p>
+      <p class="muted" style="margin-top:20px;text-align:center;">Thank you for visiting DK Mobile Salon.</p>
     </div>
   `;
   window.print();
@@ -1979,9 +1982,9 @@ function renderSettings() {
       });
       const logoText = document.querySelector(".logo-text");
       if (logoText && settingsState.salonName) logoText.textContent = settingsState.salonName;
-      document.title = `${settingsState.salonName || "Hair."} — Salon Booking`;
+      document.title = `${settingsState.salonName || "DK Mobile Salon"} — Desk`;
       const loginBrand = document.getElementById("loginBrand");
-      if (loginBrand) loginBrand.textContent = settingsState.salonName || "Hair.";
+      if (loginBrand) loginBrand.textContent = settingsState.salonName || "DK Mobile Salon";
       saveStore();
       toast("Settings saved");
     });

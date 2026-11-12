@@ -6,6 +6,8 @@
   --muted: #6b6560;
   --white: #ffffff;
   --orange: #e8894a;
+  --gold: #c9a227;
+  --gold-soft: #f0c3a0;
   --star: #f0b429;
   --radius: 22px;
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
@@ -98,6 +100,24 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   font-weight: 800;
   letter-spacing: -0.03em;
   color: #fff;
+}
+
+.brand-logo {
+  display: block;
+  height: 52px;
+  width: auto;
+  max-width: min(210px, 46vw);
+  object-fit: contain;
+  border-radius: 12px;
+  background: #fff;
+  padding: 4px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.brand-logo-footer {
+  height: 64px;
+  max-width: 240px;
+  box-shadow: none;
 }
 
 .brand-mark {
@@ -781,14 +801,17 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   position: absolute;
   left: 18px;
   bottom: -16px;
-  width: 40px;
+  min-width: 40px;
   height: 40px;
-  border-radius: 50%;
+  padding: 0 8px;
+  border-radius: 999px;
   background: #fff;
   color: #111;
   display: grid;
   place-items: center;
   font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 

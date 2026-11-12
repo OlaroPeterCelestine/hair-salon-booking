@@ -110,7 +110,7 @@ let store = {
   services: [],
   stylistsPage1: [],
   stylistsPage2: [],
-  settingsState: { salonName: "Ladies. Kampala", address: "Kampala", onlineBooking: true },
+  settingsState: { salonName: "DK Mobile Salon", address: "Kampala", onlineBooking: true },
   nextApptId: 100,
   invoiceSeq: 2042,
 };
@@ -163,6 +163,10 @@ function loadStore() {
     }
     const data = JSON.parse(raw);
     store = { ...store, ...data };
+    if (!store.settingsState) store.settingsState = { salonName: "DK Mobile Salon", address: "Kampala", onlineBooking: true };
+    if (!store.settingsState.salonName || /Hair\.|Ladies\. Kampala|Appoint Hub/i.test(store.settingsState.salonName)) {
+      store.settingsState.salonName = "DK Mobile Salon";
+    }
     const servicesChanged = ensureDefaultServices();
     if (!Array.isArray(store.stylistsPage1) || !store.stylistsPage1.length) {
       store.stylistsPage1 = structuredClone(DEFAULT_STYLISTS.slice(0, 2));
@@ -330,7 +334,7 @@ function renderOffers() {
   if (service !== "all") list = list.filter((s) => s.name === service);
   if (!showAllOffers) list = list.slice(0, 6);
 
-  const salon = store.settingsState?.salonName || "Hair. Kampala";
+  const salon = store.settingsState?.salonName || "DK Mobile Salon";
   const loc = store.settingsState?.address || "Kampala";
   document.getElementById("footerSalon").textContent = salon;
   document.getElementById("filterSalon").innerHTML = `<option value="${salon}">${salon}</option>`;
@@ -341,7 +345,7 @@ function renderOffers() {
         ${s.discount ? `<span class="offer-badge">${s.discount}</span>` : ""}
         <button type="button" class="offer-fav" aria-label="Save" data-fav="${s.name}">♡</button>
         <img src="${s.image}" alt="${s.name}" loading="lazy" />
-        <span class="offer-logo">H</span>
+        <span class="offer-logo">DK</span>
       </div>
       <div class="offer-body">
         <h3>${s.name}</h3>
@@ -389,7 +393,7 @@ function openBookModal(serviceName, preset = {}) {
   selectedStylist = preset.stylist || null;
   selectedSlot = preset.slot || null;
   document.getElementById("bookTitle").textContent = selectedService?.name || "Book service";
-  document.getElementById("bookSub").textContent = store.settingsState?.salonName || "Hair. Kampala";
+  document.getElementById("bookSub").textContent = store.settingsState?.salonName || "DK Mobile Salon";
   document.getElementById("bookForm").reset();
   document.getElementById("bookService").value = serviceName;
   document.getElementById("bookStylist").value = selectedStylist || "";
