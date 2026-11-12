@@ -223,28 +223,75 @@ function renderOffers() {
   });
 }
 
-function openBookModal(serviceName) {
+function setBookStep(step) {
+  document.getElementById("panelAvail").hidden = step !== 1;
+  document.getElementById("panelDetails").hidden = step !== 2;
+  document.getElementById("panelConfirm").hidden = step !== 3;
+  document.querySelectorAll("[data-step-ind]").forEach((el) => {
+    el.classList.toggle("active", Number(el.dataset.stepInd) === step);
+  });
+}
+
+function renderAvailabilityBoard() {
+  const salon = store.settingsState?.salonName || "Hair. Kampala";
+  document.getElementById("availSalon").textContent = salon;
+  const board = document.getElementById("availBoard");
+  const stylists = getAllStylists();
+  board.innerHTML = stylists.map((s) => {
+    const opens = openSlots(s);
+    return `
+      <article class="avail-card">
+        <div class="avail-top">
+          <img src="${s.avatar}" alt="" />
+          <div>
+            <strong>${s.name}</strong>
+            <span>${opens.length} open · ${(s.tags || []).join(" · ")}</span>
+          </div>
+        </div>
+        <div class="avail-slots">
+          ${opens.length
+            ? opens.map((slot) => `<button type="button" class="avail-slot" data-stylist="${s.name}" data-slot="${slot.t}">${slot.t}</button>`).join("")
+            : `<span class="avail-empty">No open slots right now</span>`}
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  board.querySelectorAll(".avail-slot").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const defaultService =
+        document.getElementById("filterService").value !== "all"
+          ? document.getElementById("filterService").value
+          : (store.services[0]?.name || "Women's Haircut");
+      openBookModal(defaultService, { stylist: btn.dataset.stylist, slot: btn.dataset.slot });
+    });
+  });
+}
+
+function openBookModal(serviceName, preset = {}) {
   if (store.settingsState?.onlineBooking === false) {
     toast("Online booking is disabled by the salon");
     return;
   }
   selectedService = store.services.find((s) => s.name === serviceName) || enrichServices().find((s) => s.name === serviceName);
-  selectedStylist = null;
-  selectedSlot = null;
+  selectedStylist = preset.stylist || null;
+  selectedSlot = preset.slot || null;
   document.getElementById("bookTitle").textContent = selectedService?.name || "Book service";
   document.getElementById("bookSub").textContent = store.settingsState?.salonName || "Hair. Kampala";
-  document.getElementById("bookService").value = serviceName;
-  document.getElementById("bookStylist").value = "";
-  document.getElementById("bookSlot").value = "";
-  document.getElementById("bookSubmit").disabled = true;
   document.getElementById("bookForm").reset();
   document.getElementById("bookService").value = serviceName;
+  document.getElementById("bookStylist").value = selectedStylist || "";
+  document.getElementById("bookSlot").value = selectedSlot || "";
+  document.getElementById("toDetailsBtn").disabled = !(selectedStylist && selectedSlot);
 
-  const stylists = getAllStylists();
-  const preferred = stylists.find((s) => openSlots(s).length && (!selectedService || s.tags?.some((t) => serviceName.includes(t.split(" ")[0]) || selectedService.category === "Cuts"))) || stylists.find((s) => openSlots(s).length) || stylists[0];
-  selectedStylist = preferred?.name || null;
+  if (!selectedStylist) {
+    const stylists = getAllStylists();
+    const preferred = stylists.find((s) => openSlots(s).length) || stylists[0];
+    selectedStylist = preferred?.name || null;
+  }
   renderBookStylists();
-  renderBookSlots(true);
+  renderBookSlots(!preset.slot);
+  setBookStep(1);
   document.getElementById("bookModal").hidden = false;
 }
 
@@ -269,7 +316,7 @@ function renderBookStylists() {
       selectedSlot = null;
       document.getElementById("bookStylist").value = selectedStylist;
       document.getElementById("bookSlot").value = "";
-      document.getElementById("bookSubmit").disabled = true;
+      document.getElementById("toDetailsBtn").disabled = true;
       renderBookStylists();
       renderBookSlots(true);
     });
@@ -280,16 +327,18 @@ function renderBookStylists() {
 function renderBookSlots(autoSelect) {
   const stylist = getAllStylists().find((s) => s.name === selectedStylist);
   const root = document.getElementById("bookSlots");
+  const hint = document.getElementById("slotHint");
   if (!stylist) {
     root.innerHTML = `<div style="grid-column:1/-1;color:#888">Select a stylist</div>`;
     return;
   }
   const opens = openSlots(stylist);
+  if (hint) hint.textContent = `${opens.length} free time${opens.length === 1 ? "" : "s"}`;
   if (autoSelect && opens[0] && !selectedSlot) {
     selectedSlot = opens[0].t;
     document.getElementById("bookSlot").value = selectedSlot;
-    document.getElementById("bookSubmit").disabled = false;
   }
+  document.getElementById("toDetailsBtn").disabled = !(selectedStylist && selectedSlot);
   root.innerHTML = (stylist.slots || []).map((slot) => `
     <button type="button" class="slot-btn ${slot.t === selectedSlot ? "active" : ""}" data-slot="${slot.t}" ${slot.state === "booked" ? "disabled" : ""}>${slot.t}</button>
   `).join("");
@@ -297,7 +346,7 @@ function renderBookSlots(autoSelect) {
     btn.addEventListener("click", () => {
       selectedSlot = btn.dataset.slot;
       document.getElementById("bookSlot").value = selectedSlot;
-      document.getElementById("bookSubmit").disabled = false;
+      document.getElementById("toDetailsBtn").disabled = false;
       renderBookSlots(false);
     });
   });
@@ -375,7 +424,31 @@ function submitBooking(e) {
   markSlotBooked(stylistName, slotTime);
   saveStore();
   document.getElementById("bookModal").hidden = true;
-  toast(`Booked! ${serviceName} with ${stylistName} at ${slotTime}`);
+  renderAvailabilityBoard();
+  toast(`Confirmed · ${serviceName} with ${stylistName} at ${slotTime}`);
+}
+
+function fillAvailSummary() {
+  const service = document.getElementById("bookService").value;
+  const stylist = selectedStylist;
+  const slot = selectedSlot;
+  document.getElementById("availSummary").textContent =
+    `${service} · ${stylist} · ${slot} (available)`;
+}
+
+function fillConfirmBox() {
+  const name = document.getElementById("bookName").value.trim();
+  const phone = document.getElementById("bookPhone").value.trim();
+  const email = document.getElementById("bookEmail").value.trim();
+  const service = document.getElementById("bookService").value;
+  const price = (store.services.find((s) => s.name === service) || selectedService)?.price || "";
+  document.getElementById("confirmBox").innerHTML = `
+    <h3>Confirm this availability</h3>
+    <p><strong>${service}</strong> with <strong>${selectedStylist}</strong></p>
+    <p>Time: <strong>${selectedSlot}</strong> · ${price}</p>
+    <p>${name} · ${phone} · ${email}</p>
+    <p>Tap confirm to lock this open slot as <strong>Booked</strong>.</p>
+  `;
 }
 
 /* Init */
@@ -383,11 +456,12 @@ loadStore();
 renderCategories();
 renderServiceFilter();
 renderOffers();
+renderAvailabilityBoard();
 
 document.getElementById("searchForm").addEventListener("submit", (e) => {
   e.preventDefault();
   renderOffers();
-  document.getElementById("offerings").scrollIntoView({ behavior: "smooth" });
+  document.getElementById("availability").scrollIntoView({ behavior: "smooth" });
 });
 document.getElementById("filterCategory").addEventListener("change", () => {
   renderServiceFilter();
@@ -419,6 +493,25 @@ document.querySelectorAll("[data-close]").forEach((el) => {
     document.getElementById("bookModal").hidden = true;
   });
 });
+document.getElementById("toDetailsBtn").addEventListener("click", () => {
+  if (!selectedStylist || !selectedSlot) return;
+  fillAvailSummary();
+  setBookStep(2);
+  document.getElementById("bookName").focus();
+});
+document.getElementById("backAvailBtn").addEventListener("click", () => setBookStep(1));
+document.getElementById("toConfirmBtn").addEventListener("click", () => {
+  const name = document.getElementById("bookName").value.trim();
+  const phone = document.getElementById("bookPhone").value.trim();
+  const email = document.getElementById("bookEmail").value.trim();
+  if (!name || !phone || !email) {
+    toast("Enter your name, phone, and email");
+    return;
+  }
+  fillConfirmBox();
+  setBookStep(3);
+});
+document.getElementById("backDetailsBtn").addEventListener("click", () => setBookStep(2));
 document.getElementById("bookForm").addEventListener("submit", submitBooking);
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") document.getElementById("bookModal").hidden = true;

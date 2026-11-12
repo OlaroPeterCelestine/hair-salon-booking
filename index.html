@@ -16,13 +16,12 @@
       <span class="brand-name">Appoint Hub</span>
     </a>
     <nav class="nav-links" id="navLinks">
-      <a href="/" class="active">For Clients</a>
-      <a href="desk.html">For Businesses</a>
-      <a href="#offerings">Search</a>
-      <a href="desk.html">Login</a>
+      <a href="#availability">Availability</a>
+      <a href="#offerings">Services</a>
+      <a href="#book">Book</a>
     </nav>
     <div class="header-actions">
-      <a class="btn-signup" href="#book">Sign Up</a>
+      <a class="btn-signup" href="#availability">See open slots</a>
       <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     </div>
   </header>
@@ -30,6 +29,7 @@
   <main>
     <section class="hero">
       <h1>At Last, This is What<br />You've Been Searching For</h1>
+      <p class="hero-lead">Check what’s free today, pick a time, and confirm your booking.</p>
       <form class="search-bar" id="searchForm">
         <label class="search-field">
           <span>Category</span>
@@ -60,10 +60,18 @@
       </form>
     </section>
 
+    <section class="availability" id="availability">
+      <div class="section-head">
+        <h2>Available today</h2>
+        <p>Live open times at <strong id="availSalon">Hair. Kampala</strong>. Choose a free slot to start booking.</p>
+      </div>
+      <div class="avail-board" id="availBoard"></div>
+    </section>
+
     <section class="categories" id="categories">
       <div class="section-head">
         <h2>Our categories</h2>
-        <p>Book beauty and spa services at Hair. Kampala — cuts, color, styling, and grooming.</p>
+        <p>Browse cuts, color, styling, and grooming — then lock in an open time.</p>
       </div>
       <div class="cat-track" id="catTrack"></div>
       <div class="cat-pager">
@@ -77,7 +85,7 @@
       <div class="offerings-inner">
         <div class="section-head light">
           <h2>Top rated offerings</h2>
-          <p>Pick a service to book — it lands on the salon desk as <strong>Booked</strong>.</p>
+          <p>Pick a service, check availability, then confirm your booking.</p>
         </div>
         <div class="offer-grid" id="offerGrid"></div>
         <div class="view-all-wrap">
@@ -85,16 +93,22 @@
         </div>
       </div>
     </section>
+
+    <section class="book-cta" id="book">
+      <h2>Ready to book?</h2>
+      <p>See open slots above, choose a service, and confirm — your appointment is saved as <strong>Booked</strong>.</p>
+      <a class="btn-signup" href="#availability">Check availability</a>
+    </section>
   </main>
 
   <footer class="site-footer">
     <div>
-      <strong>Appoint Hub</strong> · Client booking for <span id="footerSalon">Hair. Kampala</span>
+      <strong>Appoint Hub</strong> · Book <span id="footerSalon">Hair. Kampala</span>
     </div>
-    <a href="desk.html">Salon desk login →</a>
+    <a href="#availability">Open slots ↑</a>
   </footer>
 
-  <!-- Booking modal -->
+  <!-- Booking modal: availability first, then details, then confirm -->
   <div class="modal" id="bookModal" hidden>
     <div class="modal-backdrop" data-close></div>
     <div class="modal-card" role="dialog" aria-labelledby="bookTitle">
@@ -106,22 +120,47 @@
         <button type="button" class="modal-x" data-close aria-label="Close">×</button>
       </div>
       <form id="bookForm" class="modal-body">
-        <div class="form-grid">
-          <label class="field"><span>Your name</span><input name="name" id="bookName" required placeholder="e.g. Joan Nakato" /></label>
-          <label class="field"><span>Phone</span><input name="phone" id="bookPhone" required placeholder="+256 7XX XXX XXX" /></label>
-          <label class="field field-full"><span>Email</span><input name="email" id="bookEmail" type="email" required placeholder="you@email.com" /></label>
+        <div class="book-steps" aria-hidden="true">
+          <span class="step active" data-step-ind="1">1 Availability</span>
+          <span class="step" data-step-ind="2">2 Your details</span>
+          <span class="step" data-step-ind="3">3 Confirm</span>
         </div>
-        <p class="field-label">Stylist</p>
-        <div class="stylist-list" id="bookStylists"></div>
-        <p class="field-label">Open slots</p>
-        <div class="slot-list" id="bookSlots"></div>
+
+        <div class="book-panel" id="panelAvail">
+          <p class="field-label">Stylist</p>
+          <div class="stylist-list" id="bookStylists"></div>
+          <p class="field-label">Open slots <em class="hint" id="slotHint">Only free times are shown</em></p>
+          <div class="slot-list" id="bookSlots"></div>
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" data-close>Cancel</button>
+            <button type="button" class="btn-dark" id="toDetailsBtn" disabled>Continue</button>
+          </div>
+        </div>
+
+        <div class="book-panel" id="panelDetails" hidden>
+          <div class="confirm-chip" id="availSummary"></div>
+          <div class="form-grid">
+            <label class="field"><span>Your name</span><input name="name" id="bookName" required placeholder="e.g. Joan Nakato" /></label>
+            <label class="field"><span>Phone</span><input name="phone" id="bookPhone" required placeholder="+256 7XX XXX XXX" /></label>
+            <label class="field field-full"><span>Email</span><input name="email" id="bookEmail" type="email" required placeholder="you@email.com" /></label>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" id="backAvailBtn">Back</button>
+            <button type="button" class="btn-dark" id="toConfirmBtn">Review booking</button>
+          </div>
+        </div>
+
+        <div class="book-panel" id="panelConfirm" hidden>
+          <div class="confirm-box" id="confirmBox"></div>
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" id="backDetailsBtn">Back</button>
+            <button type="submit" class="btn-dark" id="bookSubmit">Confirm availability</button>
+          </div>
+        </div>
+
         <input type="hidden" id="bookService" />
         <input type="hidden" id="bookStylist" />
         <input type="hidden" id="bookSlot" />
-        <div class="modal-actions">
-          <button type="button" class="btn-ghost" data-close>Cancel</button>
-          <button type="submit" class="btn-dark" id="bookSubmit" disabled>Confirm booking</button>
-        </div>
       </form>
     </div>
   </div>
