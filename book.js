@@ -1,6 +1,31 @@
 /* Client booking frontend → same localStorage as salon desk */
 const STORE_KEY = "hair_salon_data";
 
+const AVATAR_FALLBACK = "images/avatar-fallback.jpg";
+const AVATAR_POOL = [
+  "images/client-mae.jpg",
+  "images/client-kara.jpg",
+  "images/client-curtis.jpg",
+  "images/client-alejandra.jpg",
+  "images/client-leyton.jpg",
+  "images/client-molly.jpg",
+  "images/client-devon.jpg",
+  "images/client-sienna.jpg",
+  "images/client-noah.jpg",
+  "images/client-amina.jpg",
+  "images/client-brian.jpg",
+  "images/client-grace.jpg",
+  "images/client-peter.jpg",
+  "images/client-linda.jpg",
+];
+
+function avatarForName(name) {
+  const s = String(name || "guest");
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return AVATAR_POOL[h % AVATAR_POOL.length] || AVATAR_FALLBACK;
+}
+
 const DEFAULT_SERVICES = [
   { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
   { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts", rating: 4.9, reviews: 18, discount: null, image: "images/svc-mens-cut.jpg" },
@@ -15,7 +40,7 @@ const DEFAULT_SERVICES = [
 const DEFAULT_STYLISTS = [
   {
     name: "Jessica McGee",
-    avatar: "https://i.pravatar.cc/96?img=32",
+    avatar: "images/stylist-jessica.jpg",
     tags: ["Women's Haircut", "Hair Coloring"],
     slots: [
       { t: "8:00", state: "" }, { t: "9:00", state: "booked" }, { t: "10:00", state: "" }, { t: "11:00", state: "" },
@@ -24,7 +49,7 @@ const DEFAULT_STYLISTS = [
   },
   {
     name: "Maximillian Neal",
-    avatar: "https://i.pravatar.cc/96?img=13",
+    avatar: "images/stylist-max.jpg",
     tags: ["Men's Haircut", "Beard Trim"],
     slots: [
       { t: "8:00", state: "" }, { t: "9:00", state: "" }, { t: "10:00", state: "booked" }, { t: "11:00", state: "booked" },
@@ -33,7 +58,7 @@ const DEFAULT_STYLISTS = [
   },
   {
     name: "Angelina Haynes",
-    avatar: "https://i.pravatar.cc/96?img=24",
+    avatar: "images/stylist-angelina.jpg",
     tags: ["Hair Coloring", "Blow-dry"],
     slots: [
       { t: "9:00", state: "" }, { t: "10:00", state: "" }, { t: "11:00", state: "booked" }, { t: "12:00", state: "" },
@@ -42,7 +67,7 @@ const DEFAULT_STYLISTS = [
   },
   {
     name: "Jessie Rae",
-    avatar: "https://i.pravatar.cc/96?img=45",
+    avatar: "images/stylist-jessie.jpg",
     tags: ["Hair Styling", "Blow-dry"],
     slots: [
       { t: "8:00", state: "booked" }, { t: "9:00", state: "booked" }, { t: "11:00", state: "" }, { t: "12:00", state: "" },
@@ -339,7 +364,7 @@ function upsertClient({ name, phone, email, price }) {
   }
   client = {
     name,
-    avatar: `https://i.pravatar.cc/88?u=${encodeURIComponent(name)}`,
+    avatar: avatarForName(name),
     phone,
     email,
     visits: 1,

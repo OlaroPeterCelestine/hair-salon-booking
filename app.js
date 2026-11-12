@@ -1,15 +1,78 @@
 /* ——— Data (seed; overwritten from localStorage when present) ——— */
+const AVATAR_FALLBACK = "images/avatar-fallback.jpg";
+const AVATAR_POOL = [
+  "images/client-mae.jpg",
+  "images/client-kara.jpg",
+  "images/client-curtis.jpg",
+  "images/client-alejandra.jpg",
+  "images/client-leyton.jpg",
+  "images/client-molly.jpg",
+  "images/client-devon.jpg",
+  "images/client-sienna.jpg",
+  "images/client-noah.jpg",
+  "images/client-amina.jpg",
+  "images/client-brian.jpg",
+  "images/client-grace.jpg",
+  "images/client-peter.jpg",
+  "images/client-linda.jpg",
+];
+
+function avatarForName(name) {
+  const s = String(name || "guest");
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return AVATAR_POOL[h % AVATAR_POOL.length] || AVATAR_FALLBACK;
+}
+
+const STYLIST_AVATARS = {
+  "Jessica McGee": "images/stylist-jessica.jpg",
+  "Maximillian Neal": "images/stylist-max.jpg",
+  "Angelina Haynes": "images/stylist-angelina.jpg",
+  "Jessie Rae": "images/stylist-jessie.jpg",
+};
+
+function isRemoteAvatar(url) {
+  return !url || String(url).includes("pravatar.cc") || String(url).startsWith("http");
+}
+
+function localizeAvatar(url, name) {
+  if (name && STYLIST_AVATARS[name]) return STYLIST_AVATARS[name];
+  if (isRemoteAvatar(url)) return avatarForName(name || "guest");
+  return url;
+}
+
+function migrateAvatars() {
+  let changed = false;
+  const patch = (list, nameKey = "name") => {
+    list.forEach((item) => {
+      const name = item[nameKey] || item.client || item.name;
+      if (isRemoteAvatar(item.avatar)) {
+        item.avatar = localizeAvatar(item.avatar, name);
+        changed = true;
+      }
+    });
+  };
+  patch(appointments, "client");
+  patch(staff);
+  patch(payments, "client");
+  patch(clients);
+  patch(reviews);
+  patch(stylistsPage1);
+  patch(stylistsPage2);
+  return changed;
+}
+
 let appointments = [
-  { id: 1, time: "9:00 – 10:30", client: "Mae Jones", avatar: "https://i.pravatar.cc/88?img=5", service: "Hair Styling", master: "Jessie Rae", price: "UGX 185,000", status: "in-progress", statusLabel: "In Progress", day: 0 },
-  { id: 2, time: "11:00 – 12:00", client: "Kara Thornton", avatar: "https://i.pravatar.cc/88?img=9", service: "Haircut", master: "Maximillian Neal", price: "UGX 165,000", status: "arrived", statusLabel: "Arrived", day: 0 },
-  { id: 3, time: "12:45 – 13:45", client: "Curtis Walters", avatar: "https://i.pravatar.cc/88?img=12", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 0 },
-  { id: 4, time: "14:00 – 15:45", client: "Alejandra Casey", avatar: "https://i.pravatar.cc/88?img=20", service: "Blow-dry", master: "Jessie Rae", price: "UGX 165,000", status: "past", statusLabel: "Past", day: 0 },
-  { id: 5, time: "14:00 – 15:45", client: "Leyton Landry", avatar: "https://i.pravatar.cc/88?img=15", service: "Hair Coloring", master: "Maximillian Neal", price: "UGX 330,000", status: "past", statusLabel: "Past", day: 0 },
-  { id: 6, time: "10:00 – 11:00", client: "Molly Hawkins", avatar: "https://i.pravatar.cc/88?img=1", service: "Women's Haircut", master: "Jessica McGee", price: "UGX 150,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
-  { id: 7, time: "13:00 – 14:30", client: "Devon Price", avatar: "https://i.pravatar.cc/88?img=33", service: "Beard Trim", master: "Maximillian Neal", price: "UGX 80,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
-  { id: 8, time: "9:30 – 11:00", client: "Sienna Brooks", avatar: "https://i.pravatar.cc/88?img=25", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 2 },
-  { id: 9, time: "15:00 – 16:00", client: "Noah Okello", avatar: "https://i.pravatar.cc/88?img=11", service: "Men's Haircut", master: "Maximillian Neal", price: "UGX 120,000", status: "confirmed", statusLabel: "Confirmed", day: 3 },
-  { id: 10, time: "11:30 – 12:30", client: "Amina Nalwoga", avatar: "https://i.pravatar.cc/88?img=26", service: "Blow-dry", master: "Jessie Rae", price: "UGX 165,000", status: "confirmed", statusLabel: "Confirmed", day: 4 },
+  { id: 1, time: "9:00 – 10:30", client: "Mae Jones", avatar: "images/client-mae.jpg", service: "Hair Styling", master: "Jessie Rae", price: "UGX 185,000", status: "in-progress", statusLabel: "In Progress", day: 0 },
+  { id: 2, time: "11:00 – 12:00", client: "Kara Thornton", avatar: "images/client-kara.jpg", service: "Haircut", master: "Maximillian Neal", price: "UGX 165,000", status: "arrived", statusLabel: "Arrived", day: 0 },
+  { id: 3, time: "12:45 – 13:45", client: "Curtis Walters", avatar: "images/client-curtis.jpg", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 0 },
+  { id: 4, time: "14:00 – 15:45", client: "Alejandra Casey", avatar: "images/client-alejandra.jpg", service: "Blow-dry", master: "Jessie Rae", price: "UGX 165,000", status: "past", statusLabel: "Past", day: 0 },
+  { id: 5, time: "14:00 – 15:45", client: "Leyton Landry", avatar: "images/client-leyton.jpg", service: "Hair Coloring", master: "Maximillian Neal", price: "UGX 330,000", status: "past", statusLabel: "Past", day: 0 },
+  { id: 6, time: "10:00 – 11:00", client: "Molly Hawkins", avatar: "images/client-molly.jpg", service: "Women's Haircut", master: "Jessica McGee", price: "UGX 150,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
+  { id: 7, time: "13:00 – 14:30", client: "Devon Price", avatar: "images/client-devon.jpg", service: "Beard Trim", master: "Maximillian Neal", price: "UGX 80,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
+  { id: 8, time: "9:30 – 11:00", client: "Sienna Brooks", avatar: "images/client-sienna.jpg", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 2 },
+  { id: 9, time: "15:00 – 16:00", client: "Noah Okello", avatar: "images/client-noah.jpg", service: "Men's Haircut", master: "Maximillian Neal", price: "UGX 120,000", status: "confirmed", statusLabel: "Confirmed", day: 3 },
+  { id: 10, time: "11:30 – 12:30", client: "Amina Nalwoga", avatar: "images/client-amina.jpg", service: "Blow-dry", master: "Jessie Rae", price: "UGX 165,000", status: "confirmed", statusLabel: "Confirmed", day: 4 },
 ];
 
 const weekDays = [
@@ -25,7 +88,7 @@ const weekDays = [
 let stylistsPage1 = [
   {
     name: "Jessica McGee",
-    avatar: "https://i.pravatar.cc/96?img=32",
+    avatar: "images/stylist-jessica.jpg",
     tags: ["Women's Haircut", "Hair Coloring"],
     date: "Mon, 22 Jan",
     slots: [
@@ -35,7 +98,7 @@ let stylistsPage1 = [
   },
   {
     name: "Maximillian Neal",
-    avatar: "https://i.pravatar.cc/96?img=13",
+    avatar: "images/stylist-max.jpg",
     tags: ["Men's Haircut", "Beard Trim"],
     date: "Mon, 22 Jan",
     slots: [
@@ -48,7 +111,7 @@ let stylistsPage1 = [
 let stylistsPage2 = [
   {
     name: "Angelina Haynes",
-    avatar: "https://i.pravatar.cc/96?img=24",
+    avatar: "images/stylist-angelina.jpg",
     tags: ["Hair Coloring", "Blow-dry"],
     date: "Mon, 22 Jan",
     slots: [
@@ -58,7 +121,7 @@ let stylistsPage2 = [
   },
   {
     name: "Jessie Rae",
-    avatar: "https://i.pravatar.cc/96?img=45",
+    avatar: "images/stylist-jessie.jpg",
     tags: ["Hair Styling", "Blow-dry"],
     date: "Mon, 22 Jan",
     slots: [
@@ -122,44 +185,44 @@ function shiftInfo(code) {
 }
 
 let staff = [
-  { name: "Maximillian Neal", avatar: "https://i.pravatar.cc/72?img=13", status: "active", label: "Active", role: "Senior Stylist", phone: "+256 700 111 222", email: "max@hair.ug", specialty: "Men's cuts & beard", shifts: { mon: "full", tue: "full", wed: "full", thu: "full", fri: "full", sat: "morning", sun: "off" } },
-  { name: "Angelina Haynes", avatar: "https://i.pravatar.cc/72?img=24", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights", shifts: { mon: "afternoon", tue: "afternoon", wed: "off", thu: "afternoon", fri: "afternoon", sat: "full", sun: "off" } },
-  { name: "Jessica McGee", avatar: "https://i.pravatar.cc/72?img=32", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts", shifts: defaultShifts("off") },
-  { name: "Jessie Rae", avatar: "https://i.pravatar.cc/72?img=45", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry", shifts: { mon: "full", tue: "full", wed: "morning", thu: "full", fri: "full", sat: "off", sun: "off" } },
+  { name: "Maximillian Neal", avatar: "images/stylist-max.jpg", status: "active", label: "Active", role: "Senior Stylist", phone: "+256 700 111 222", email: "max@hair.ug", specialty: "Men's cuts & beard", shifts: { mon: "full", tue: "full", wed: "full", thu: "full", fri: "full", sat: "morning", sun: "off" } },
+  { name: "Angelina Haynes", avatar: "images/stylist-angelina.jpg", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights", shifts: { mon: "afternoon", tue: "afternoon", wed: "off", thu: "afternoon", fri: "afternoon", sat: "full", sun: "off" } },
+  { name: "Jessica McGee", avatar: "images/stylist-jessica.jpg", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts", shifts: defaultShifts("off") },
+  { name: "Jessie Rae", avatar: "images/stylist-jessie.jpg", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry", shifts: { mon: "full", tue: "full", wed: "morning", thu: "full", fri: "full", sat: "off", sun: "off" } },
 ];
 
 let shiftEditIdx = null;
 
 let payments = [
-  { id: "INV-2041", client: "Mae Jones", avatar: "https://i.pravatar.cc/80?img=5", service: "Hair Styling", amount: "UGX 185,000", method: "Mobile Money", date: "22 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2040", client: "Kara Thornton", avatar: "https://i.pravatar.cc/80?img=9", service: "Haircut", amount: "UGX 165,000", method: "Cash", date: "22 Jan 2026", status: "pending", statusLabel: "Pending" },
-  { id: "INV-2039", client: "Curtis Walters", avatar: "https://i.pravatar.cc/80?img=12", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "21 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2038", client: "Alejandra Casey", avatar: "https://i.pravatar.cc/80?img=20", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "21 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2037", client: "Leyton Landry", avatar: "https://i.pravatar.cc/80?img=15", service: "Hair Coloring", amount: "UGX 330,000", method: "Card", date: "20 Jan 2026", status: "refunded", statusLabel: "Refunded" },
-  { id: "INV-2036", client: "Molly Hawkins", avatar: "https://i.pravatar.cc/80?img=1", service: "Hair Coloring", amount: "UGX 260,000", method: "Mobile Money", date: "18 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2035", client: "Devon Price", avatar: "https://i.pravatar.cc/80?img=33", service: "Men's Haircut", amount: "UGX 120,000", method: "Cash", date: "16 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2034", client: "Amina Nalwoga", avatar: "https://i.pravatar.cc/80?img=26", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "15 Jan 2026", status: "pending", statusLabel: "Pending" },
-  { id: "INV-2033", client: "Sienna Brooks", avatar: "https://i.pravatar.cc/80?img=25", service: "Hair Styling", amount: "UGX 185,000", method: "Card", date: "14 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2032", client: "Noah Okello", avatar: "https://i.pravatar.cc/80?img=11", service: "Men's Haircut", amount: "UGX 120,000", method: "Cash", date: "12 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2031", client: "Mae Jones", avatar: "https://i.pravatar.cc/80?img=5", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "10 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2030", client: "Kara Thornton", avatar: "https://i.pravatar.cc/80?img=9", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "8 Jan 2026", status: "refunded", statusLabel: "Refunded" },
+  { id: "INV-2041", client: "Mae Jones", avatar: "images/client-mae.jpg", service: "Hair Styling", amount: "UGX 185,000", method: "Mobile Money", date: "22 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2040", client: "Kara Thornton", avatar: "images/client-kara.jpg", service: "Haircut", amount: "UGX 165,000", method: "Cash", date: "22 Jan 2026", status: "pending", statusLabel: "Pending" },
+  { id: "INV-2039", client: "Curtis Walters", avatar: "images/client-curtis.jpg", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "21 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2038", client: "Alejandra Casey", avatar: "images/client-alejandra.jpg", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "21 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2037", client: "Leyton Landry", avatar: "images/client-leyton.jpg", service: "Hair Coloring", amount: "UGX 330,000", method: "Card", date: "20 Jan 2026", status: "refunded", statusLabel: "Refunded" },
+  { id: "INV-2036", client: "Molly Hawkins", avatar: "images/client-molly.jpg", service: "Hair Coloring", amount: "UGX 260,000", method: "Mobile Money", date: "18 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2035", client: "Devon Price", avatar: "images/client-devon.jpg", service: "Men's Haircut", amount: "UGX 120,000", method: "Cash", date: "16 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2034", client: "Amina Nalwoga", avatar: "images/client-amina.jpg", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "15 Jan 2026", status: "pending", statusLabel: "Pending" },
+  { id: "INV-2033", client: "Sienna Brooks", avatar: "images/client-sienna.jpg", service: "Hair Styling", amount: "UGX 185,000", method: "Card", date: "14 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2032", client: "Noah Okello", avatar: "images/client-noah.jpg", service: "Men's Haircut", amount: "UGX 120,000", method: "Cash", date: "12 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2031", client: "Mae Jones", avatar: "images/client-mae.jpg", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "10 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2030", client: "Kara Thornton", avatar: "images/client-kara.jpg", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "8 Jan 2026", status: "refunded", statusLabel: "Refunded" },
 ];
 
 let clients = [
-  { name: "Mae Jones", avatar: "https://i.pravatar.cc/88?img=5", phone: "+256 772 100 201", email: "mae.jones@email.com", visits: 12, last: "22 Jan 2026", spent: "UGX 1,850,000" },
-  { name: "Kara Thornton", avatar: "https://i.pravatar.cc/88?img=9", phone: "+256 772 100 202", email: "kara.t@email.com", visits: 8, last: "22 Jan 2026", spent: "UGX 980,000" },
-  { name: "Curtis Walters", avatar: "https://i.pravatar.cc/88?img=12", phone: "+256 772 100 203", email: "curtis.w@email.com", visits: 5, last: "21 Jan 2026", spent: "UGX 720,000" },
-  { name: "Alejandra Casey", avatar: "https://i.pravatar.cc/88?img=20", phone: "+256 772 100 204", email: "ale.casey@email.com", visits: 15, last: "21 Jan 2026", spent: "UGX 2,100,000" },
-  { name: "Leyton Landry", avatar: "https://i.pravatar.cc/88?img=15", phone: "+256 772 100 205", email: "leyton.l@email.com", visits: 3, last: "20 Jan 2026", spent: "UGX 450,000" },
-  { name: "Molly Hawkins", avatar: "https://i.pravatar.cc/88?img=1", phone: "+256 772 100 206", email: "molly.h@email.com", visits: 9, last: "18 Jan 2026", spent: "UGX 1,420,000" },
-  { name: "Devon Price", avatar: "https://i.pravatar.cc/88?img=33", phone: "+256 772 100 207", email: "devon.p@email.com", visits: 6, last: "16 Jan 2026", spent: "UGX 640,000" },
-  { name: "Sienna Brooks", avatar: "https://i.pravatar.cc/88?img=25", phone: "+256 772 100 208", email: "sienna.b@email.com", visits: 4, last: "14 Jan 2026", spent: "UGX 510,000" },
-  { name: "Noah Okello", avatar: "https://i.pravatar.cc/88?img=11", phone: "+256 772 100 209", email: "noah.o@email.com", visits: 7, last: "12 Jan 2026", spent: "UGX 780,000" },
-  { name: "Amina Nalwoga", avatar: "https://i.pravatar.cc/88?img=26", phone: "+256 772 100 210", email: "amina.n@email.com", visits: 11, last: "10 Jan 2026", spent: "UGX 1,650,000" },
-  { name: "Brian Mugisha", avatar: "https://i.pravatar.cc/88?img=14", phone: "+256 772 100 211", email: "brian.m@email.com", visits: 2, last: "9 Jan 2026", spent: "UGX 240,000" },
-  { name: "Grace Atim", avatar: "https://i.pravatar.cc/88?img=29", phone: "+256 772 100 212", email: "grace.a@email.com", visits: 14, last: "7 Jan 2026", spent: "UGX 2,400,000" },
-  { name: "Peter Kato", avatar: "https://i.pravatar.cc/88?img=17", phone: "+256 772 100 213", email: "peter.k@email.com", visits: 1, last: "5 Jan 2026", spent: "UGX 120,000" },
-  { name: "Linda Akello", avatar: "https://i.pravatar.cc/88?img=31", phone: "+256 772 100 214", email: "linda.a@email.com", visits: 6, last: "3 Jan 2026", spent: "UGX 890,000" },
+  { name: "Mae Jones", avatar: "images/client-mae.jpg", phone: "+256 772 100 201", email: "mae.jones@email.com", visits: 12, last: "22 Jan 2026", spent: "UGX 1,850,000" },
+  { name: "Kara Thornton", avatar: "images/client-kara.jpg", phone: "+256 772 100 202", email: "kara.t@email.com", visits: 8, last: "22 Jan 2026", spent: "UGX 980,000" },
+  { name: "Curtis Walters", avatar: "images/client-curtis.jpg", phone: "+256 772 100 203", email: "curtis.w@email.com", visits: 5, last: "21 Jan 2026", spent: "UGX 720,000" },
+  { name: "Alejandra Casey", avatar: "images/client-alejandra.jpg", phone: "+256 772 100 204", email: "ale.casey@email.com", visits: 15, last: "21 Jan 2026", spent: "UGX 2,100,000" },
+  { name: "Leyton Landry", avatar: "images/client-leyton.jpg", phone: "+256 772 100 205", email: "leyton.l@email.com", visits: 3, last: "20 Jan 2026", spent: "UGX 450,000" },
+  { name: "Molly Hawkins", avatar: "images/client-molly.jpg", phone: "+256 772 100 206", email: "molly.h@email.com", visits: 9, last: "18 Jan 2026", spent: "UGX 1,420,000" },
+  { name: "Devon Price", avatar: "images/client-devon.jpg", phone: "+256 772 100 207", email: "devon.p@email.com", visits: 6, last: "16 Jan 2026", spent: "UGX 640,000" },
+  { name: "Sienna Brooks", avatar: "images/client-sienna.jpg", phone: "+256 772 100 208", email: "sienna.b@email.com", visits: 4, last: "14 Jan 2026", spent: "UGX 510,000" },
+  { name: "Noah Okello", avatar: "images/client-noah.jpg", phone: "+256 772 100 209", email: "noah.o@email.com", visits: 7, last: "12 Jan 2026", spent: "UGX 780,000" },
+  { name: "Amina Nalwoga", avatar: "images/client-amina.jpg", phone: "+256 772 100 210", email: "amina.n@email.com", visits: 11, last: "10 Jan 2026", spent: "UGX 1,650,000" },
+  { name: "Brian Mugisha", avatar: "images/client-brian.jpg", phone: "+256 772 100 211", email: "brian.m@email.com", visits: 2, last: "9 Jan 2026", spent: "UGX 240,000" },
+  { name: "Grace Atim", avatar: "images/client-grace.jpg", phone: "+256 772 100 212", email: "grace.a@email.com", visits: 14, last: "7 Jan 2026", spent: "UGX 2,400,000" },
+  { name: "Peter Kato", avatar: "images/client-peter.jpg", phone: "+256 772 100 213", email: "peter.k@email.com", visits: 1, last: "5 Jan 2026", spent: "UGX 120,000" },
+  { name: "Linda Akello", avatar: "images/client-linda.jpg", phone: "+256 772 100 214", email: "linda.a@email.com", visits: 6, last: "3 Jan 2026", spent: "UGX 890,000" },
 ];
 
 let services = [
@@ -174,15 +237,15 @@ let services = [
 ];
 
 let reviews = [
-  { name: "Molly Hawkins", avatar: "https://i.pravatar.cc/96?img=1", date: "2 days ago", stars: 5, service: "Hair Coloring · Jessie Rae", text: "Absolutely loved my color! Jessie took the time to understand exactly what I wanted and the result is perfect." },
-  { name: "Devon Price", avatar: "https://i.pravatar.cc/96?img=33", date: "4 days ago", stars: 5, service: "Men's Haircut · Maximillian Neal", text: "Clean cut, great vibe, and on time. Already booked my next appointment." },
-  { name: "Sienna Brooks", avatar: "https://i.pravatar.cc/96?img=25", date: "1 week ago", stars: 4, service: "Blow-dry · Angelina Haynes", text: "Salon feels calm and professional. Blow-dry lasted through a windy week — impressed!" },
-  { name: "Amina Nalwoga", avatar: "https://i.pravatar.cc/96?img=26", date: "1 week ago", stars: 5, service: "Women's Haircut · Jessica McGee", text: "Best cut I've had in Kampala. Jessica listens and the finish is always sharp." },
-  { name: "Noah Okello", avatar: "https://i.pravatar.cc/96?img=11", date: "2 weeks ago", stars: 5, service: "Beard Trim · Maximillian Neal", text: "Quick, precise, and friendly. Worth every shilling." },
-  { name: "Kara Thornton", avatar: "https://i.pravatar.cc/96?img=9", date: "2 weeks ago", stars: 4, service: "Hair Styling · Jessie Rae", text: "Looked amazing for my event. Booking online was easy too." },
-  { name: "Grace Atim", avatar: "https://i.pravatar.cc/96?img=29", date: "3 weeks ago", stars: 5, service: "Highlights / Balayage · Angelina Haynes", text: "Color came out exactly as we discussed. Soft and natural." },
-  { name: "Brian Mugisha", avatar: "https://i.pravatar.cc/96?img=14", date: "3 weeks ago", stars: 3, service: "Men's Haircut · Maximillian Neal", text: "Good cut but waited a bit longer than expected." },
-  { name: "Linda Akello", avatar: "https://i.pravatar.cc/96?img=31", date: "1 month ago", stars: 5, service: "Deep Conditioning · Jessie Rae", text: "Hair feels healthier already. Will be back." },
+  { name: "Molly Hawkins", avatar: "images/client-molly.jpg", date: "2 days ago", stars: 5, service: "Hair Coloring · Jessie Rae", text: "Absolutely loved my color! Jessie took the time to understand exactly what I wanted and the result is perfect." },
+  { name: "Devon Price", avatar: "images/client-devon.jpg", date: "4 days ago", stars: 5, service: "Men's Haircut · Maximillian Neal", text: "Clean cut, great vibe, and on time. Already booked my next appointment." },
+  { name: "Sienna Brooks", avatar: "images/client-sienna.jpg", date: "1 week ago", stars: 4, service: "Blow-dry · Angelina Haynes", text: "Salon feels calm and professional. Blow-dry lasted through a windy week — impressed!" },
+  { name: "Amina Nalwoga", avatar: "images/client-amina.jpg", date: "1 week ago", stars: 5, service: "Women's Haircut · Jessica McGee", text: "Best cut I've had in Kampala. Jessica listens and the finish is always sharp." },
+  { name: "Noah Okello", avatar: "images/client-noah.jpg", date: "2 weeks ago", stars: 5, service: "Beard Trim · Maximillian Neal", text: "Quick, precise, and friendly. Worth every shilling." },
+  { name: "Kara Thornton", avatar: "images/client-kara.jpg", date: "2 weeks ago", stars: 4, service: "Hair Styling · Jessie Rae", text: "Looked amazing for my event. Booking online was easy too." },
+  { name: "Grace Atim", avatar: "images/client-grace.jpg", date: "3 weeks ago", stars: 5, service: "Highlights / Balayage · Angelina Haynes", text: "Color came out exactly as we discussed. Soft and natural." },
+  { name: "Brian Mugisha", avatar: "images/client-brian.jpg", date: "3 weeks ago", stars: 3, service: "Men's Haircut · Maximillian Neal", text: "Good cut but waited a bit longer than expected." },
+  { name: "Linda Akello", avatar: "images/client-linda.jpg", date: "1 month ago", stars: 5, service: "Deep Conditioning · Jessie Rae", text: "Hair feels healthier already. Will be back." },
 ];
 
 const pageTitles = {
@@ -273,6 +336,7 @@ function loadStore() {
     appointments.forEach((a) => {
       if (STATUS_LABELS[a.status]) a.statusLabel = STATUS_LABELS[a.status];
     });
+    if (migrateAvatars()) saveStore();
   } catch (err) {
     console.warn("Could not load localStorage", err);
   }
@@ -444,7 +508,7 @@ function upsertClientFromBooking({ name, phone, email, avatar, price, visitDate 
   }
   client = {
     name,
-    avatar: avatar || `https://i.pravatar.cc/88?u=${encodeURIComponent(name)}`,
+    avatar: avatar || avatarForName(name),
     phone: phone || "",
     email: email || "",
     visits: 1,
@@ -463,7 +527,7 @@ function syncClientsFromBookings() {
     if (exists) return;
     clients.unshift({
       name: a.client,
-      avatar: a.avatar || `https://i.pravatar.cc/88?u=${encodeURIComponent(a.client)}`,
+      avatar: avatarForName(a.client),
       phone: "",
       email: "",
       visits: appointments.filter((x) => x.client === a.client).length,
@@ -2129,7 +2193,7 @@ document.getElementById("employeeForm")?.addEventListener("submit", (e) => {
   const name = String(fd.get("name")).trim();
   const emp = {
     name,
-    avatar: `https://i.pravatar.cc/72?u=${encodeURIComponent(name)}`,
+    avatar: avatarForName(name),
     status,
     label: statusLabelForStaff(status),
     role: String(fd.get("role")),
