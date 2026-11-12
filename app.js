@@ -436,7 +436,7 @@ function lockApp() {
   updatePinDots();
   clearPinError();
   const brand = document.getElementById("loginBrand");
-  if (brand) brand.textContent = settingsState.salonName || "Hair.";
+  if (brand) brand.textContent = settingsState.salonName || "DK Mobile Salon";
 }
 
 function submitPin() {
