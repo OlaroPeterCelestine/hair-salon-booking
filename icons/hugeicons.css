@@ -1,0 +1,44 @@
+@font-face {
+  font-family: "hugeicons-stroke-rounded";
+  src: url("./hgi-stroke-rounded.woff2") format("woff2"),
+       url("./hgi-stroke-rounded.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+.hgi-stroke {
+  font-family: "hugeicons-stroke-rounded" !important;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  font-variant: normal;
+  line-height: 1;
+  text-rendering: auto;
+  speak: never;
+}
+
+.hgi-stroke.hgi-dashboard-square-01::before { content: "\f1b15"; }
+.hgi-stroke.hgi-calendar-03::before { content: "\f1853"; }
+.hgi-stroke.hgi-credit-card::before { content: "\f1aa2"; }
+.hgi-stroke.hgi-user-multiple::before { content: "\f292e"; }
+.hgi-stroke.hgi-user-group::before { content: "\f2923"; }
+.hgi-stroke.hgi-scissors::before { content: "\f3322"; }
+.hgi-stroke.hgi-star::before { content: "\f26d7"; }
+.hgi-stroke.hgi-settings-01::before { content: "\f257f"; }
+.hgi-stroke.hgi-menu-01::before { content: "\f20d9"; }
+.hgi-stroke.hgi-search-01::before { content: "\f2546"; }
+.hgi-stroke.hgi-bubble-chat::before { content: "\f17e2"; }
+.hgi-stroke.hgi-notification-01::before { content: "\f222f"; }
+.hgi-stroke.hgi-arrow-down-01::before { content: "\f15fc"; }
+.hgi-stroke.hgi-arrow-left-01::before { content: "\f1612"; }
+.hgi-stroke.hgi-arrow-right-01::before { content: "\f1623"; }
+.hgi-stroke.hgi-mail-01::before { content: "\f205c"; }
+.hgi-stroke.hgi-call::before { content: "\f18a0"; }
+.hgi-stroke.hgi-user-account::before { content: "\f2913"; }
+.hgi-stroke.hgi-calendar-check::before { content: "\f3056"; }
+.hgi-stroke.hgi-add-01::before { content: "\f150c"; }
+.hgi-stroke.hgi-cancel-01::before { content: "\f18bc"; }
+.hgi-stroke.hgi-tick-02::before { content: "\f282c"; }
+.hgi-stroke.hgi-message-01::before { content: "\f20e9"; }
