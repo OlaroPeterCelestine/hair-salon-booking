@@ -1,5 +1,5 @@
-/* ——— Data ——— */
-const appointments = [
+/* ——— Data (seed; overwritten from localStorage when present) ——— */
+let appointments = [
   { id: 1, time: "9:00 – 10:30", client: "Mae Jones", avatar: "https://i.pravatar.cc/88?img=5", service: "Hair Styling", master: "Jessie Rae", price: "UGX 185,000", status: "in-progress", statusLabel: "In Progress", day: 0 },
   { id: 2, time: "11:00 – 12:00", client: "Kara Thornton", avatar: "https://i.pravatar.cc/88?img=9", service: "Haircut", master: "Maximillian Neal", price: "UGX 165,000", status: "arrived", statusLabel: "Arrived", day: 0 },
   { id: 3, time: "12:45 – 13:45", client: "Curtis Walters", avatar: "https://i.pravatar.cc/88?img=12", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 0 },
@@ -22,7 +22,7 @@ const weekDays = [
   { dow: "Sun", dom: "28", label: "Sunday, 28 Jan" },
 ];
 
-const stylistsPage1 = [
+let stylistsPage1 = [
   {
     name: "Jessica McGee",
     avatar: "https://i.pravatar.cc/96?img=32",
@@ -45,7 +45,7 @@ const stylistsPage1 = [
   },
 ];
 
-const stylistsPage2 = [
+let stylistsPage2 = [
   {
     name: "Angelina Haynes",
     avatar: "https://i.pravatar.cc/96?img=24",
@@ -68,14 +68,14 @@ const stylistsPage2 = [
   },
 ];
 
-const staff = [
+let staff = [
   { name: "Maximillian Neal", avatar: "https://i.pravatar.cc/72?img=13", status: "active", label: "Active", role: "Senior Stylist", phone: "+256 700 111 222", email: "max@hair.ug", specialty: "Men's cuts & beard" },
   { name: "Angelina Haynes", avatar: "https://i.pravatar.cc/72?img=24", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights" },
   { name: "Jessica McGee", avatar: "https://i.pravatar.cc/72?img=32", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts" },
   { name: "Jessie Rae", avatar: "https://i.pravatar.cc/72?img=45", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry" },
 ];
 
-const payments = [
+let payments = [
   { id: "INV-2041", client: "Mae Jones", avatar: "https://i.pravatar.cc/80?img=5", service: "Hair Styling", amount: "UGX 185,000", method: "Mobile Money", date: "22 Jan 2026", status: "paid", statusLabel: "Paid" },
   { id: "INV-2040", client: "Kara Thornton", avatar: "https://i.pravatar.cc/80?img=9", service: "Haircut", amount: "UGX 165,000", method: "Cash", date: "22 Jan 2026", status: "pending", statusLabel: "Pending" },
   { id: "INV-2039", client: "Curtis Walters", avatar: "https://i.pravatar.cc/80?img=12", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "21 Jan 2026", status: "paid", statusLabel: "Paid" },
@@ -90,7 +90,7 @@ const payments = [
   { id: "INV-2030", client: "Kara Thornton", avatar: "https://i.pravatar.cc/80?img=9", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "8 Jan 2026", status: "refunded", statusLabel: "Refunded" },
 ];
 
-const clients = [
+let clients = [
   { name: "Mae Jones", avatar: "https://i.pravatar.cc/88?img=5", phone: "+256 772 100 201", email: "mae.jones@email.com", visits: 12, last: "22 Jan 2026", spent: "UGX 1,850,000" },
   { name: "Kara Thornton", avatar: "https://i.pravatar.cc/88?img=9", phone: "+256 772 100 202", email: "kara.t@email.com", visits: 8, last: "22 Jan 2026", spent: "UGX 980,000" },
   { name: "Curtis Walters", avatar: "https://i.pravatar.cc/88?img=12", phone: "+256 772 100 203", email: "curtis.w@email.com", visits: 5, last: "21 Jan 2026", spent: "UGX 720,000" },
@@ -107,7 +107,7 @@ const clients = [
   { name: "Linda Akello", avatar: "https://i.pravatar.cc/88?img=31", phone: "+256 772 100 214", email: "linda.a@email.com", visits: 6, last: "3 Jan 2026", spent: "UGX 890,000" },
 ];
 
-const services = [
+let services = [
   { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts" },
   { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts" },
   { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling" },
@@ -118,7 +118,7 @@ const services = [
   { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Care" },
 ];
 
-const reviews = [
+let reviews = [
   { name: "Molly Hawkins", avatar: "https://i.pravatar.cc/96?img=1", date: "2 days ago", stars: 5, service: "Hair Coloring · Jessie Rae", text: "Absolutely loved my color! Jessie took the time to understand exactly what I wanted and the result is perfect." },
   { name: "Devon Price", avatar: "https://i.pravatar.cc/96?img=33", date: "4 days ago", stars: 5, service: "Men's Haircut · Maximillian Neal", text: "Clean cut, great vibe, and on time. Already booked my next appointment." },
   { name: "Sienna Brooks", avatar: "https://i.pravatar.cc/96?img=25", date: "1 week ago", stars: 4, service: "Blow-dry · Angelina Haynes", text: "Salon feels calm and professional. Blow-dry lasted through a windy week — impressed!" },
@@ -141,7 +141,7 @@ const pageTitles = {
   settings: "Settings",
 };
 
-const settingsState = {
+let settingsState = {
   salonName: "Hair. Kampala",
   owner: "Admin User",
   phone: "+256 700 000 000",
@@ -163,13 +163,63 @@ const settingsState = {
   payCard: true,
 };
 
-/* ——— PIN auth ——— */
+/* ——— Local storage ——— */
 const PIN_KEY = "hair_salon_pin";
 const SESSION_KEY = "hair_salon_session";
+const STORE_KEY = "hair_salon_data";
 const DEFAULT_PIN = "2468";
 const PIN_LEN = 4;
 let pinBuffer = "";
+let invoiceSeq = 2042;
+let nextApptId = 100;
 
+function saveStore() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      appointments,
+      staff,
+      payments,
+      clients,
+      services,
+      reviews,
+      settingsState,
+      stylistsPage1,
+      stylistsPage2,
+      invoiceSeq,
+      nextApptId,
+    }));
+  } catch (err) {
+    console.warn("Could not save to localStorage", err);
+  }
+}
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) {
+      saveStore();
+      return;
+    }
+    const data = JSON.parse(raw);
+    if (Array.isArray(data.appointments)) appointments = data.appointments;
+    if (Array.isArray(data.staff)) staff = data.staff;
+    if (Array.isArray(data.payments)) payments = data.payments;
+    if (Array.isArray(data.clients)) clients = data.clients;
+    if (Array.isArray(data.services)) services = data.services;
+    if (Array.isArray(data.reviews)) reviews = data.reviews;
+    if (data.settingsState && typeof data.settingsState === "object") {
+      settingsState = { ...settingsState, ...data.settingsState };
+    }
+    if (Array.isArray(data.stylistsPage1)) stylistsPage1 = data.stylistsPage1;
+    if (Array.isArray(data.stylistsPage2)) stylistsPage2 = data.stylistsPage2;
+    if (typeof data.invoiceSeq === "number") invoiceSeq = data.invoiceSeq;
+    if (typeof data.nextApptId === "number") nextApptId = data.nextApptId;
+  } catch (err) {
+    console.warn("Could not load localStorage", err);
+  }
+}
+
+/* ——— PIN auth ——— */
 function getStoredPin() {
   return localStorage.getItem(PIN_KEY) || DEFAULT_PIN;
 }
@@ -179,7 +229,7 @@ function setStoredPin(pin) {
 }
 
 function isLoggedIn() {
-  return sessionStorage.getItem(SESSION_KEY) === "1";
+  return localStorage.getItem(SESSION_KEY) === "1";
 }
 
 function updatePinDots() {
@@ -208,7 +258,7 @@ function showPinError() {
 }
 
 function unlockApp() {
-  sessionStorage.setItem(SESSION_KEY, "1");
+  localStorage.setItem(SESSION_KEY, "1");
   document.body.classList.remove("locked");
   document.getElementById("loginScreen").hidden = true;
   const app = document.getElementById("appShell");
@@ -217,10 +267,13 @@ function unlockApp() {
   pinBuffer = "";
   updatePinDots();
   clearPinError();
+  const logoText = document.querySelector(".logo-text");
+  if (logoText && settingsState.salonName) logoText.textContent = settingsState.salonName;
+  document.title = `${settingsState.salonName || "Hair."} — Salon Booking`;
 }
 
 function lockApp() {
-  sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_KEY);
   document.body.classList.add("locked");
   const app = document.getElementById("appShell");
   app.hidden = true;
@@ -287,15 +340,16 @@ let payFilter = "all";
 let serviceFilter = "All";
 let pendingPayAppt = null;
 let selectedPayMethod = "Mobile Money";
-let invoiceSeq = 2042;
-const availPages = [stylistsPage1, stylistsPage2];
 const PAGE_SIZE_DEFAULT = 5;
 let apptSelectedStylist = null;
 let apptSelectedSlot = null;
-let nextApptId = 100;
+
+function getAvailPages() {
+  return [stylistsPage1, stylistsPage2];
+}
 
 function getAllStylists() {
-  return availPages.flat();
+  return [...stylistsPage1, ...stylistsPage2];
 }
 
 function openSlotsFor(stylist) {
@@ -663,6 +717,7 @@ function advanceStatus(apptId) {
   if (step.next === "complete") {
     appt.status = "complete";
     appt.statusLabel = "Complete";
+    saveStore();
     refreshDashboardAppts();
     toast(`${appt.client} marked Complete — collect payment`);
     openPaymentModal(appt);
@@ -671,6 +726,7 @@ function advanceStatus(apptId) {
 
   appt.status = step.next;
   appt.statusLabel = STATUS_LABELS[step.next];
+  saveStore();
   refreshDashboardAppts();
   toast(`${appt.client} → ${appt.statusLabel}`);
 }
@@ -744,6 +800,7 @@ function completePayment() {
   }
   closeModal("paymentModal");
   pendingPayAppt = null;
+  saveStore();
   refreshDashboardAppts();
   if (currentPage === "payments") renderPayments();
   if (currentPage === "schedule") renderSchedule();
@@ -752,11 +809,12 @@ function completePayment() {
 }
 
 function renderAvailability() {
-  const data = availPages[availPage];
+  const pages = getAvailPages();
+  const data = pages[availPage];
   const dayLabel = availDayLabels[availDayOffset] || availDayLabels[0];
-  document.getElementById("availPage").textContent = `${availPage + 1}/${availPages.length}`;
+  document.getElementById("availPage").textContent = `${availPage + 1}/${pages.length}`;
   document.getElementById("availPrev").disabled = availPage === 0;
-  document.getElementById("availNext").disabled = availPage === availPages.length - 1;
+  document.getElementById("availNext").disabled = availPage === pages.length - 1;
   document.getElementById("availability").innerHTML = data.map((s, si) => `
     <div class="stylist-card" data-stylist="${s.name}">
       <div class="stylist-top">
@@ -1231,6 +1289,7 @@ function renderEmployees() {
       const next = order[(order.indexOf(s.status) + 1) % order.length];
       s.status = next;
       s.label = statusLabelForStaff(next);
+      saveStore();
       renderEmployees();
       renderStaff();
       toast(`${s.name} → ${s.label}`);
@@ -1580,6 +1639,7 @@ function renderSettings() {
       document.title = `${settingsState.salonName || "Hair."} — Salon Booking`;
       const loginBrand = document.getElementById("loginBrand");
       if (loginBrand) loginBrand.textContent = settingsState.salonName || "Hair.";
+      saveStore();
       toast("Settings saved");
     });
   });
@@ -1657,6 +1717,7 @@ function handleSearch(q) {
 }
 
 /* ——— Init ——— */
+loadStore();
 hydrateIcons();
 renderAppointments();
 renderAvailability();
@@ -1667,7 +1728,7 @@ document.getElementById("availPrev").addEventListener("click", () => {
   if (availPage > 0) { availPage--; renderAvailability(); }
 });
 document.getElementById("availNext").addEventListener("click", () => {
-  if (availPage < availPages.length - 1) { availPage++; renderAvailability(); }
+  if (availPage < getAvailPages().length - 1) { availPage++; renderAvailability(); }
 });
 
 document.getElementById("availability").addEventListener("click", (e) => {
@@ -1769,6 +1830,7 @@ document.getElementById("apptForm")?.addEventListener("submit", (e) => {
   });
 
   markSlotBooked(stylistName, slotTime);
+  saveStore();
   closeModal("apptModal");
   toast(`Booked ${slotTime} with ${stylistName}`);
   renderAvailability();
@@ -1792,6 +1854,7 @@ document.getElementById("employeeForm")?.addEventListener("submit", (e) => {
     specialty: String(fd.get("specialty")),
   };
   staff.unshift(emp);
+  saveStore();
   closeModal("employeeModal");
   toast(`${emp.name} added to team`);
   if (currentPage === "employees") renderEmployees();
@@ -1811,6 +1874,7 @@ document.getElementById("clientForm")?.addEventListener("submit", (e) => {
     last: "—",
     spent: "UGX 0",
   });
+  saveStore();
   closeModal("clientModal");
   toast(`${name} added as client`);
   if (currentPage === "clients") renderClients();
@@ -1828,6 +1892,7 @@ document.getElementById("serviceForm")?.addEventListener("submit", (e) => {
     price: fmtUgx(priceNum),
     category: String(fd.get("category")),
   });
+  saveStore();
   closeModal("serviceModal");
   toast(`${name} added to services`);
   if (currentPage === "services") renderServicesPage();
