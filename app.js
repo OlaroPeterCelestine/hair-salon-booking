@@ -187,7 +187,7 @@ function shiftInfo(code) {
 let staff = [
   { name: "Amina Nakato", avatar: "images/client-amina.jpg", status: "active", label: "Active", role: "Nail Artist", phone: "+256 700 111 222", email: "amina@hair.ug", specialty: "Nails & pedicure", shifts: { mon: "full", tue: "full", wed: "full", thu: "full", fri: "full", sat: "morning", sun: "off" } },
   { name: "Angelina Haynes", avatar: "images/stylist-angelina.jpg", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights", shifts: { mon: "afternoon", tue: "afternoon", wed: "off", thu: "afternoon", fri: "afternoon", sat: "full", sun: "off" } },
-  { name: "Jessica McGee", avatar: "images/stylist-jessica.jpg", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts", shifts: defaultShifts("off") },
+  { name: "Jessica McGee", avatar: "images/stylist-jessica.jpg", status: "vacation", label: "On vacation", role: "Facial & Brow Artist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Facials & brows", shifts: defaultShifts("off") },
   { name: "Jessie Rae", avatar: "images/stylist-jessie.jpg", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry", shifts: { mon: "full", tue: "full", wed: "morning", thu: "full", fri: "full", sat: "off", sun: "off" } },
 ];
 
@@ -231,6 +231,10 @@ let services = [
   { name: "Gel Manicure", desc: "Shape, gel polish & cuticle care", duration: "45–60 min", price: "UGX 95,000", category: "Nails" },
   { name: "Luxury Pedicure", desc: "Soak, scrub, polish & massage", duration: "60–75 min", price: "UGX 120,000", category: "Nails" },
   { name: "Acrylic / Soft Gel Set", desc: "Full set with soft glam finish", duration: "90–120 min", price: "UGX 160,000", category: "Nails" },
+  { name: "Signature Facial", desc: "Cleanse, extract, mask & glow", duration: "60–75 min", price: "UGX 180,000", category: "Facial" },
+  { name: "Deep Cleanse Facial", desc: "Detox facial for congested skin", duration: "75–90 min", price: "UGX 210,000", category: "Facial" },
+  { name: "Brow Shape & Tint", desc: "Shape, tidy, and tint brows", duration: "30–40 min", price: "UGX 70,000", category: "Facial" },
+  { name: "Soft Glam Makeup", desc: "Everyday or event soft glam face", duration: "60–90 min", price: "UGX 200,000", category: "Glam" },
   { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Hair" },
   { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Hair" },
   { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Hair" },
@@ -354,6 +358,10 @@ function loadStore() {
       { name: "Gel Manicure", desc: "Shape, gel polish & cuticle care", duration: "45–60 min", price: "UGX 95,000", category: "Nails" },
       { name: "Luxury Pedicure", desc: "Soak, scrub, polish & massage", duration: "60–75 min", price: "UGX 120,000", category: "Nails" },
       { name: "Acrylic / Soft Gel Set", desc: "Full set with soft glam finish", duration: "90–120 min", price: "UGX 160,000", category: "Nails" },
+      { name: "Signature Facial", desc: "Cleanse, extract, mask & glow", duration: "60–75 min", price: "UGX 180,000", category: "Facial" },
+      { name: "Deep Cleanse Facial", desc: "Detox facial for congested skin", duration: "75–90 min", price: "UGX 210,000", category: "Facial" },
+      { name: "Brow Shape & Tint", desc: "Shape, tidy, and tint brows", duration: "30–40 min", price: "UGX 70,000", category: "Facial" },
+      { name: "Soft Glam Makeup", desc: "Everyday or event soft glam face", duration: "60–90 min", price: "UGX 200,000", category: "Glam" },
       { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Hair" },
       { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Glam" },
     ];

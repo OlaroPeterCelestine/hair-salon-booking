@@ -34,6 +34,10 @@ const DEFAULT_SERVICES = [
   { name: "Gel Manicure", desc: "Shape, gel polish & cuticle care", duration: "45–60 min", price: "UGX 95,000", category: "Nails", rating: 5.0, reviews: 28, discount: "10% off", image: "images/svc-nails.jpg" },
   { name: "Luxury Pedicure", desc: "Soak, scrub, polish & massage", duration: "60–75 min", price: "UGX 120,000", category: "Nails", rating: 4.9, reviews: 19, discount: null, image: "images/svc-pedicure.jpg" },
   { name: "Acrylic / Soft Gel Set", desc: "Full set with soft glam finish", duration: "90–120 min", price: "UGX 160,000", category: "Nails", rating: 4.9, reviews: 17, discount: "10% off", image: "images/cat-nails.jpg" },
+  { name: "Signature Facial", desc: "Cleanse, extract, mask & glow", duration: "60–75 min", price: "UGX 180,000", category: "Facial", rating: 5.0, reviews: 22, discount: "10% off", image: "images/svc-facial.jpg" },
+  { name: "Deep Cleanse Facial", desc: "Detox facial for congested skin", duration: "75–90 min", price: "UGX 210,000", category: "Facial", rating: 4.9, reviews: 14, discount: null, image: "images/cat-facial.jpg" },
+  { name: "Brow Shape & Tint", desc: "Shape, tidy, and tint brows", duration: "30–40 min", price: "UGX 70,000", category: "Facial", rating: 4.8, reviews: 18, discount: null, image: "images/svc-brows.jpg" },
+  { name: "Soft Glam Makeup", desc: "Everyday or event soft glam face", duration: "60–90 min", price: "UGX 200,000", category: "Glam", rating: 5.0, reviews: 20, discount: "10% off", image: "images/svc-makeup.jpg" },
   { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Hair", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
   { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Hair", rating: 5.0, reviews: 24, discount: "10% off", image: "images/cat-traditional.jpg" },
   { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Hair", rating: 5.0, reviews: 8, discount: "10% off", image: "images/svc-styling.jpg" },
@@ -53,7 +57,7 @@ const HERO_VIDEOS = [
 ];
 
 const MOTION_CLIPS = [
-  { title: "Braids & hair", tag: "Hair", filter: "Hair", src: "videos/african-braid-weave.mp4", poster: "images/client-linda.jpg" },
+  { title: "Facial glow", tag: "Facial", filter: "Facial", src: "videos/hero-african-hair.mp4", poster: "images/svc-facial.jpg" },
   { title: "Lash glam", tag: "Lashes", filter: "Lashes", src: "videos/hero-african-lashes.mp4", poster: "images/svc-lashes.jpg" },
   { title: "Nails & soft glam", tag: "Nails", filter: "Nails", src: "videos/african-model-shoot.mp4", poster: "images/svc-nails.jpg" },
 ];
@@ -62,7 +66,7 @@ const DEFAULT_STYLISTS = [
   {
     name: "Jessica McGee",
     avatar: "images/stylist-jessica.jpg",
-    tags: ["Women's Haircut", "Lash Lift & Tint"],
+    tags: ["Signature Facial", "Brow Shape & Tint"],
     slots: [
       { t: "8:00", state: "" }, { t: "9:00", state: "booked" }, { t: "10:00", state: "" }, { t: "11:00", state: "" },
       { t: "12:00", state: "" }, { t: "13:00", state: "booked" }, { t: "14:00", state: "" }, { t: "15:00", state: "" },
@@ -80,7 +84,7 @@ const DEFAULT_STYLISTS = [
   {
     name: "Angelina Haynes",
     avatar: "images/stylist-angelina.jpg",
-    tags: ["Lash Extensions", "Acrylic / Soft Gel Set"],
+    tags: ["Lash Extensions", "Soft Glam Makeup"],
     slots: [
       { t: "9:00", state: "" }, { t: "10:00", state: "" }, { t: "11:00", state: "booked" }, { t: "12:00", state: "" },
       { t: "13:00", state: "" }, { t: "14:00", state: "booked" }, { t: "15:00", state: "" }, { t: "16:00", state: "" },
@@ -100,6 +104,7 @@ const DEFAULT_STYLISTS = [
 const CATEGORIES = [
   { name: "Lash Studio", image: "images/cat-lashes.jpg", filter: "Lashes" },
   { name: "Nails Lounge", image: "images/cat-nails.jpg", filter: "Nails" },
+  { name: "Facial Spa", image: "images/cat-facial.jpg", filter: "Facial" },
   { name: "Ladies Hair", image: "images/cat-traditional.jpg", filter: "Hair" },
   { name: "Soft Glam", image: "images/svc-bridal.jpg", filter: "Glam" },
 ];
@@ -602,10 +607,12 @@ function initReveals() {
 }
 
 const LOOK_STORIES = [
+  { name: "Facial glow", desc: "Cleanse, mask, and soft-skin radiance.", service: "Signature Facial", image: "images/svc-facial.jpg" },
   { name: "Lash lift", desc: "Feather-light lift for everyday queen energy.", service: "Lash Lift & Tint", image: "images/svc-lash-lift.jpg" },
   { name: "Hybrid lashes", desc: "Soft drama that still feels natural.", service: "Lash Extensions", image: "images/svc-lashes.jpg" },
   { name: "Gel tips", desc: "Clean glossy nails made for Kampala nights.", service: "Gel Manicure", image: "images/svc-nails.jpg" },
-  { name: "Pedicure glow", desc: "Spa feet reset before the weekend.", service: "Luxury Pedicure", image: "images/svc-pedicure.jpg" },
+  { name: "Soft glam makeup", desc: "Camera-ready face for dates and events.", service: "Soft Glam Makeup", image: "images/svc-makeup.jpg" },
+  { name: "Brow tint", desc: "Shaped and tinted brows that frame the face.", service: "Brow Shape & Tint", image: "images/svc-brows.jpg" },
   { name: "Knotless braids", desc: "Protective style with soft glam edges.", service: "Braids & Twists", image: "images/cat-traditional.jpg" },
   { name: "Bridal soft glam", desc: "Hair + face finish for your big moment.", service: "Bridal / Soft Glam", image: "images/svc-bridal.jpg" },
 ];
@@ -621,9 +628,9 @@ const NAIL_SHADES = [
 
 const QUEEN_LOOKS = [
   { title: "Amina’s soft glam energy", text: "Lifted lashes and clean gel tips. Steal the look in one booking.", image: "images/client-amina.jpg", service: "Lash Extensions" },
-  { title: "Grace’s braid royalty", text: "Knotless braids with soft edges — protective and camera-ready.", image: "images/client-grace.jpg", service: "Braids & Twists" },
+  { title: "Grace’s facial glow", text: "Signature facial for glass-skin radiance before soft glam.", image: "images/client-grace.jpg", service: "Signature Facial" },
   { title: "Linda’s nail muse mood", text: "Glossy gel set and a polished finish for every plan.", image: "images/client-linda.jpg", service: "Gel Manicure" },
-  { title: "Jessie’s bridal glow", text: "Soft glam hair and lashes for the main character day.", image: "images/stylist-jessie.jpg", service: "Bridal / Soft Glam" },
+  { title: "Jessie’s bridal glow", text: "Soft glam makeup and hair for the main character day.", image: "images/stylist-jessie.jpg", service: "Soft Glam Makeup" },
 ];
 
 let activeStoryService = LOOK_STORIES[0].service;
