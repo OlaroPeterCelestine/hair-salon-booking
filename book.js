@@ -2,14 +2,14 @@
 const STORE_KEY = "hair_salon_data";
 
 const DEFAULT_SERVICES = [
-  { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts", rating: 5.0, reviews: 12, discount: "10% off", image: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80" },
-  { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts", rating: 4.9, reviews: 18, discount: null, image: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&q=80" },
-  { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling", rating: 5.0, reviews: 8, discount: "10% off", image: "https://images.unsplash.com/photo-1522337094846-8a818192de1f?w=800&q=80" },
-  { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Styling", rating: 4.8, reviews: 10, discount: null, image: "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=800&q=80" },
-  { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Color", rating: 5.0, reviews: 15, discount: "15% off", image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=800&q=80" },
-  { name: "Highlights / Balayage", desc: "Custom lightening technique", duration: "2–3 hrs", price: "UGX 330,000", category: "Color", rating: 4.9, reviews: 9, discount: null, image: "https://images.unsplash.com/photo-1634449573010-91d00c0f8e81?w=800&q=80" },
-  { name: "Beard Trim", desc: "Shape and tidy beard", duration: "20 min", price: "UGX 80,000", category: "Grooming", rating: 4.7, reviews: 11, discount: null, image: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80" },
-  { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Care", rating: 4.8, reviews: 7, discount: "10% off", image: "https://images.unsplash.com/photo-1519415387729-c4c5f5d0f0a3?w=800&q=80" },
+  { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
+  { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts", rating: 4.9, reviews: 18, discount: null, image: "images/svc-mens-cut.jpg" },
+  { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling", rating: 5.0, reviews: 8, discount: "10% off", image: "images/svc-styling.jpg" },
+  { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Styling", rating: 4.8, reviews: 10, discount: null, image: "images/svc-blowdry.jpg" },
+  { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Color", rating: 5.0, reviews: 15, discount: "15% off", image: "images/svc-color.jpg" },
+  { name: "Highlights / Balayage", desc: "Custom lightening technique", duration: "2–3 hrs", price: "UGX 330,000", category: "Color", rating: 4.9, reviews: 9, discount: null, image: "images/svc-balayage.jpg" },
+  { name: "Beard Trim", desc: "Shape and tidy beard", duration: "20 min", price: "UGX 80,000", category: "Grooming", rating: 4.7, reviews: 11, discount: null, image: "images/svc-beard.jpg" },
+  { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Care", rating: 4.8, reviews: 7, discount: "10% off", image: "images/svc-conditioning.jpg" },
 ];
 
 const DEFAULT_STYLISTS = [
@@ -52,10 +52,10 @@ const DEFAULT_STYLISTS = [
 ];
 
 const CATEGORIES = [
-  { name: "Traditional Hair Salons", image: "https://images.unsplash.com/photo-1521590832167-7bcbfaaae1b0?w=800&q=80", filter: "Cuts" },
-  { name: "Barber Shop", image: "https://images.unsplash.com/photo-1585747860715-2ba37e789bcc?w=800&q=80", filter: "Grooming" },
-  { name: "Spa Salon", image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&q=80", filter: "Care" },
-  { name: "Luxury Salon", image: "https://images.unsplash.com/photo-1633681926022-84c103e9e3ad?w=800&q=80", filter: "Color" },
+  { name: "Traditional Hair Salons", image: "images/cat-traditional.jpg", filter: "Cuts" },
+  { name: "Barber Shop", image: "images/cat-barber.jpg", filter: "Grooming" },
+  { name: "Spa Salon", image: "images/cat-spa.jpg", filter: "Care" },
+  { name: "Luxury Salon", image: "images/cat-luxury.jpg", filter: "Color" },
 ];
 
 let store = {
@@ -145,7 +145,7 @@ function enrichServices() {
       rating: meta.rating || 4.8,
       reviews: meta.reviews || 6,
       discount: meta.discount || null,
-      image: meta.image || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&q=80",
+      image: meta.image || "images/svc-womens-cut.jpg",
     };
   });
 }
