@@ -19,6 +19,7 @@
       <span class="brand-name">Appoint Hub</span>
     </a>
     <nav class="nav-links" id="navLinks">
+      <a href="#glam">Ladies</a>
       <a href="#categories">Categories</a>
       <a href="#offerings">Services</a>
       <a href="#book">Book</a>
@@ -30,44 +31,62 @@
   </header>
 
   <main>
-    <section class="hero">
-      <p class="hero-kicker hero-anim" style="--d:0s">Hair. Kampala · Appoint Hub</p>
-      <h1 class="hero-anim" style="--d:.08s">At Last, This is What<br />You've Been Searching For</h1>
-      <p class="hero-lead hero-anim" style="--d:.18s">Pick a service, then choose an open time when you book.</p>
-      <form class="search-bar hero-anim" id="searchForm" style="--d:.28s">
-        <label class="search-field">
-          <span>Category</span>
-          <select id="filterCategory">
-            <option value="all">All categories</option>
-            <option value="Cuts">Cuts</option>
-            <option value="Styling">Styling</option>
-            <option value="Color">Color</option>
-            <option value="Grooming">Grooming</option>
-            <option value="Care">Care</option>
-          </select>
-        </label>
-        <label class="search-field">
-          <span>Salon</span>
-          <select id="filterSalon">
-            <option value="Hair. Kampala">Hair. Kampala</option>
-          </select>
-        </label>
-        <label class="search-field">
-          <span>Service</span>
-          <select id="filterService">
-            <option value="all">All services</option>
-          </select>
-        </label>
-        <button type="submit" class="search-submit" aria-label="Search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        </button>
-      </form>
+    <section class="hero hero-video">
+      <div class="hero-media" aria-hidden="true">
+        <video id="heroVideo" class="hero-video-el is-active" autoplay muted loop playsinline poster="images/cat-luxury.jpg">
+          <source src="https://assets.mixkit.co/videos/16073/16073-720.mp4" type="video/mp4" />
+        </video>
+        <video id="heroVideoB" class="hero-video-el" muted loop playsinline poster="images/cat-lashes.jpg"></video>
+        <div class="hero-scrim"></div>
+      </div>
+      <div class="hero-content">
+        <p class="hero-kicker hero-anim" style="--d:0s">Ladies · Lashes · Hair. Kampala</p>
+        <h1 class="hero-anim" style="--d:.08s">Appoint Hub</h1>
+        <p class="hero-lead hero-anim" style="--d:.18s">Hair, lashes, and glam for women — pick a service, then lock an open time.</p>
+        <form class="search-bar hero-anim" id="searchForm" style="--d:.28s">
+          <label class="search-field">
+            <span>Category</span>
+            <select id="filterCategory">
+              <option value="all">All categories</option>
+              <option value="Lashes">Lashes</option>
+              <option value="Cuts">Cuts</option>
+              <option value="Styling">Styling</option>
+              <option value="Color">Color</option>
+              <option value="Care">Care</option>
+              <option value="Grooming">Grooming</option>
+            </select>
+          </label>
+          <label class="search-field">
+            <span>Salon</span>
+            <select id="filterSalon">
+              <option value="Hair. Kampala">Hair. Kampala</option>
+            </select>
+          </label>
+          <label class="search-field">
+            <span>Service</span>
+            <select id="filterService">
+              <option value="all">All services</option>
+            </select>
+          </label>
+          <button type="submit" class="search-submit" aria-label="Search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section class="motion-strip reveal" id="glam">
+      <div class="section-head">
+        <h2>Made for ladies</h2>
+        <p>Live salon motion — hair, lashes, and beauty looks you’ll love.</p>
+      </div>
+      <div class="motion-grid" id="motionGrid"></div>
     </section>
 
     <section class="categories reveal" id="categories">
       <div class="section-head">
         <h2>Our categories</h2>
-        <p>Browse cuts, color, styling, and grooming — then book an open time.</p>
+        <p>Browse lashes, cuts, color, and styling — then book an open time.</p>
       </div>
       <div class="cat-track" id="catTrack"></div>
       <div class="cat-pager">

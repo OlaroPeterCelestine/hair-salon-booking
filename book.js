@@ -27,21 +27,38 @@ function avatarForName(name) {
 }
 
 const DEFAULT_SERVICES = [
+  { name: "Lash Extensions", desc: "Classic or hybrid extensions", duration: "90–120 min", price: "UGX 220,000", category: "Lashes", rating: 5.0, reviews: 21, discount: "10% off", image: "images/svc-lashes.jpg" },
+  { name: "Lash Lift & Tint", desc: "Lift, curl, and tint natural lashes", duration: "60 min", price: "UGX 140,000", category: "Lashes", rating: 4.9, reviews: 16, discount: null, image: "images/svc-lash-lift.jpg" },
   { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
-  { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts", rating: 4.9, reviews: 18, discount: null, image: "images/svc-mens-cut.jpg" },
   { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling", rating: 5.0, reviews: 8, discount: "10% off", image: "images/svc-styling.jpg" },
   { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Styling", rating: 4.8, reviews: 10, discount: null, image: "images/svc-blowdry.jpg" },
   { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Color", rating: 5.0, reviews: 15, discount: "15% off", image: "images/svc-color.jpg" },
   { name: "Highlights / Balayage", desc: "Custom lightening technique", duration: "2–3 hrs", price: "UGX 330,000", category: "Color", rating: 4.9, reviews: 9, discount: null, image: "images/svc-balayage.jpg" },
-  { name: "Beard Trim", desc: "Shape and tidy beard", duration: "20 min", price: "UGX 80,000", category: "Grooming", rating: 4.7, reviews: 11, discount: null, image: "images/svc-beard.jpg" },
+  { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Styling", rating: 5.0, reviews: 11, discount: "10% off", image: "images/svc-bridal.jpg" },
   { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Care", rating: 4.8, reviews: 7, discount: "10% off", image: "images/svc-conditioning.jpg" },
+  { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts", rating: 4.9, reviews: 18, discount: null, image: "images/svc-mens-cut.jpg" },
+  { name: "Beard Trim", desc: "Shape and tidy beard", duration: "20 min", price: "UGX 80,000", category: "Grooming", rating: 4.7, reviews: 11, discount: null, image: "images/svc-beard.jpg" },
+];
+
+const HERO_VIDEOS = [
+  { src: "https://assets.mixkit.co/videos/16073/16073-720.mp4", poster: "images/cat-luxury.jpg" },
+  { src: "https://assets.mixkit.co/videos/52059/52059-720.mp4", poster: "images/cat-lashes.jpg" },
+  { src: "https://assets.mixkit.co/videos/16044/16044-720.mp4", poster: "images/svc-styling.jpg" },
+  { src: "https://assets.mixkit.co/videos/4718/4718-720.mp4", poster: "images/svc-lashes.jpg" },
+  { src: "https://assets.mixkit.co/videos/40598/40598-720.mp4", poster: "images/svc-bridal.jpg" },
+];
+
+const MOTION_CLIPS = [
+  { title: "Ladies hair", tag: "Styling", filter: "Styling", src: "https://assets.mixkit.co/videos/16044/16044-720.mp4", poster: "images/svc-styling.jpg" },
+  { title: "Lash glam", tag: "Lashes", filter: "Lashes", src: "https://assets.mixkit.co/videos/52052/52052-720.mp4", poster: "images/svc-lashes.jpg" },
+  { title: "Soft makeup", tag: "Beauty", filter: "Lashes", src: "https://assets.mixkit.co/videos/40540/40540-720.mp4", poster: "images/svc-lash-lift.jpg" },
 ];
 
 const DEFAULT_STYLISTS = [
   {
     name: "Jessica McGee",
     avatar: "images/stylist-jessica.jpg",
-    tags: ["Women's Haircut", "Hair Coloring"],
+    tags: ["Women's Haircut", "Lash Lift & Tint"],
     slots: [
       { t: "8:00", state: "" }, { t: "9:00", state: "booked" }, { t: "10:00", state: "" }, { t: "11:00", state: "" },
       { t: "12:00", state: "" }, { t: "13:00", state: "booked" }, { t: "14:00", state: "" }, { t: "15:00", state: "" },
@@ -59,7 +76,7 @@ const DEFAULT_STYLISTS = [
   {
     name: "Angelina Haynes",
     avatar: "images/stylist-angelina.jpg",
-    tags: ["Hair Coloring", "Blow-dry"],
+    tags: ["Hair Coloring", "Lash Extensions"],
     slots: [
       { t: "9:00", state: "" }, { t: "10:00", state: "" }, { t: "11:00", state: "booked" }, { t: "12:00", state: "" },
       { t: "13:00", state: "" }, { t: "14:00", state: "booked" }, { t: "15:00", state: "" }, { t: "16:00", state: "" },
@@ -68,7 +85,7 @@ const DEFAULT_STYLISTS = [
   {
     name: "Jessie Rae",
     avatar: "images/stylist-jessie.jpg",
-    tags: ["Hair Styling", "Blow-dry"],
+    tags: ["Hair Styling", "Bridal / Soft Glam"],
     slots: [
       { t: "8:00", state: "booked" }, { t: "9:00", state: "booked" }, { t: "11:00", state: "" }, { t: "12:00", state: "" },
       { t: "13:00", state: "" }, { t: "14:00", state: "booked" }, { t: "16:00", state: "" }, { t: "17:00", state: "" },
@@ -77,10 +94,11 @@ const DEFAULT_STYLISTS = [
 ];
 
 const CATEGORIES = [
-  { name: "Traditional Hair Salons", image: "images/cat-traditional.jpg", filter: "Cuts" },
-  { name: "Barber Shop", image: "images/cat-barber.jpg", filter: "Grooming" },
+  { name: "Lash Studio", image: "images/cat-lashes.jpg", filter: "Lashes" },
+  { name: "Ladies Hair", image: "images/cat-traditional.jpg", filter: "Cuts" },
   { name: "Spa Salon", image: "images/cat-spa.jpg", filter: "Care" },
-  { name: "Luxury Salon", image: "images/cat-luxury.jpg", filter: "Color" },
+  { name: "Luxury Color", image: "images/cat-luxury.jpg", filter: "Color" },
+  { name: "Soft Glam", image: "images/svc-bridal.jpg", filter: "Styling" },
 ];
 
 let store = {
@@ -112,6 +130,22 @@ function fmtUgx(n) {
   return "UGX " + Number(n || 0).toLocaleString("en-UG");
 }
 
+function ensureDefaultServices() {
+  const mapped = DEFAULT_SERVICES.map(({ name, desc, duration, price, category }) => ({ name, desc, duration, price, category }));
+  if (!Array.isArray(store.services) || !store.services.length) {
+    store.services = mapped;
+    return true;
+  }
+  let changed = false;
+  mapped.forEach((svc) => {
+    if (!store.services.some((s) => s.name === svc.name)) {
+      store.services.unshift(svc);
+      changed = true;
+    }
+  });
+  return changed;
+}
+
 function loadStore() {
   try {
     const raw = localStorage.getItem(STORE_KEY);
@@ -123,13 +157,12 @@ function loadStore() {
     }
     const data = JSON.parse(raw);
     store = { ...store, ...data };
-    if (!Array.isArray(store.services) || !store.services.length) {
-      store.services = DEFAULT_SERVICES.map(({ name, desc, duration, price, category }) => ({ name, desc, duration, price, category }));
-    }
+    const servicesChanged = ensureDefaultServices();
     if (!Array.isArray(store.stylistsPage1) || !store.stylistsPage1.length) {
       store.stylistsPage1 = structuredClone(DEFAULT_STYLISTS.slice(0, 2));
       store.stylistsPage2 = structuredClone(DEFAULT_STYLISTS.slice(2));
     }
+    if (servicesChanged) saveStore();
   } catch (err) {
     console.warn(err);
   }
@@ -192,6 +225,81 @@ function renderCategories() {
   });
   document.getElementById("catPage").textContent = `${catPage + 1}/${CATEGORIES.length}`;
   observeMotionItems(track.querySelectorAll(".cat-card"));
+}
+
+function renderMotionClips() {
+  const grid = document.getElementById("motionGrid");
+  if (!grid) return;
+  grid.innerHTML = MOTION_CLIPS.map((clip, i) => `
+    <button type="button" class="motion-card" data-filter="${clip.filter}" style="--d:${i * 0.1}s">
+      <div class="motion-media">
+        <video muted loop playsinline preload="metadata" poster="${clip.poster}" data-src="${clip.src}"></video>
+        <span class="motion-tag">${clip.tag}</span>
+      </div>
+      <strong>${clip.title}</strong>
+    </button>
+  `).join("");
+
+  grid.querySelectorAll(".motion-card").forEach((card) => {
+    const video = card.querySelector("video");
+    card.addEventListener("mouseenter", () => {
+      if (video && !video.src) {
+        video.src = video.dataset.src;
+        video.load();
+      }
+      video?.play().catch(() => {});
+    });
+    card.addEventListener("mouseleave", () => {
+      if (!video) return;
+      video.pause();
+      video.currentTime = 0;
+    });
+    card.addEventListener("click", () => {
+      document.getElementById("filterCategory").value = card.dataset.filter;
+      renderOffers();
+      document.getElementById("offerings").scrollIntoView({ behavior: "smooth" });
+    });
+  });
+
+  // Autoload first clip for mobile / first paint
+  const first = grid.querySelector("video");
+  if (first) {
+    first.src = first.dataset.src;
+    first.load();
+    first.play().catch(() => {});
+  }
+  observeMotionItems(grid.querySelectorAll(".motion-card"));
+}
+
+function initHeroVideos() {
+  const a = document.getElementById("heroVideo");
+  const b = document.getElementById("heroVideoB");
+  if (!a || !b || !HERO_VIDEOS.length) return;
+  let idx = 0;
+  let showingA = true;
+
+  const playCurrent = (el, item) => {
+    el.poster = item.poster;
+    el.src = item.src;
+    el.load();
+    return el.play().catch(() => {});
+  };
+
+  playCurrent(a, HERO_VIDEOS[0]);
+
+  const swap = () => {
+    idx = (idx + 1) % HERO_VIDEOS.length;
+    const next = HERO_VIDEOS[idx];
+    const incoming = showingA ? b : a;
+    const outgoing = showingA ? a : b;
+    playCurrent(incoming, next).then(() => {
+      incoming.classList.add("is-active");
+      outgoing.classList.remove("is-active");
+      showingA = !showingA;
+    });
+  };
+
+  setInterval(swap, 7000);
 }
 
 function renderServiceFilter() {
@@ -477,8 +585,10 @@ function initReveals() {
 /* Init */
 loadStore();
 renderCategories();
+renderMotionClips();
 renderServiceFilter();
 renderOffers();
+initHeroVideos();
 requestAnimationFrame(() => {
   document.body.classList.add("page-enter");
   initReveals();
