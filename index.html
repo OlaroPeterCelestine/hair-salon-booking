@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="book.css" />
 </head>
-<body>
+<body id="top">
   <div class="bg-orb bg-orb-a" aria-hidden="true"></div>
   <div class="bg-orb bg-orb-b" aria-hidden="true"></div>
 
@@ -117,10 +117,48 @@
   </main>
 
   <footer class="site-footer">
-    <div>
-      <strong>Appoint Hub</strong> · Book <span id="footerSalon">Hair. Kampala</span>
+    <div class="footer-glow" aria-hidden="true"></div>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="brand" href="/">
+          <span class="brand-mark">A</span>
+          <span class="brand-name">Appoint Hub</span>
+        </a>
+        <p>African beauty for ladies in Kampala — hair, lashes, braids, and soft glam. Book an open time in minutes.</p>
+        <div class="footer-chips">
+          <span>Lashes</span>
+          <span>Braids</span>
+          <span>Soft glam</span>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3>Explore</h3>
+        <a href="#glam">Ladies</a>
+        <a href="#categories">Categories</a>
+        <a href="#offerings">Services</a>
+        <a href="#book">Book now</a>
+      </div>
+
+      <div class="footer-col">
+        <h3>Salon</h3>
+        <p id="footerSalon">Hair. Kampala</p>
+        <p>Kampala, Uganda</p>
+        <p>+256 700 000 000</p>
+        <p>hello@hair.ug</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Hours</h3>
+        <p>Mon–Sat · 8:00–18:00</p>
+        <p>Sunday · Closed</p>
+        <a class="footer-cta" href="#offerings">Browse services</a>
+      </div>
     </div>
-    <a href="#offerings">Services ↑</a>
+    <div class="footer-bottom">
+      <span>© <span id="footerYear">2026</span> Appoint Hub · Hair. Kampala</span>
+      <a href="#top" id="backTop">Back to top ↑</a>
+    </div>
   </footer>
 
   <!-- Booking modal: availability first, then details, then confirm -->

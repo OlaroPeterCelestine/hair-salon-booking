@@ -602,6 +602,9 @@ requestAnimationFrame(() => {
   initReveals();
 });
 
+const footerYear = document.getElementById("footerYear");
+if (footerYear) footerYear.textContent = String(new Date().getFullYear());
+
 document.getElementById("searchForm").addEventListener("submit", (e) => {
   e.preventDefault();
   renderOffers();
