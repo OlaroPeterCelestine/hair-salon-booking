@@ -19,8 +19,9 @@
       <span class="brand-name">Appoint Hub</span>
     </a>
     <nav class="nav-links" id="navLinks">
+      <a href="#looks">Looks</a>
       <a href="#glam">Ladies</a>
-      <a href="#categories">Categories</a>
+      <a href="#shadeLab">Nails</a>
       <a href="#offerings">Services</a>
       <a href="#book">Book</a>
     </nav>
@@ -40,7 +41,7 @@
         <div class="hero-scrim"></div>
       </div>
       <div class="hero-content">
-        <p class="hero-kicker hero-anim" style="--d:0s">Ladies only · Lashes · Nails · Hair</p>
+        <p class="hero-kicker hero-anim" id="dayGreeting" style="--d:0s">Ladies only · Lashes · Nails · Hair</p>
         <h1 class="hero-anim" style="--d:.08s">Appoint Hub</h1>
         <p class="hero-lead hero-anim" style="--d:.18s">A Black African ladies salon in Kampala — lashes, nails, braids, and soft glam.</p>
         <form class="search-bar hero-anim" id="searchForm" style="--d:.28s">
@@ -70,7 +71,27 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
           </button>
         </form>
+        <div class="vibe-row hero-anim" id="vibeRow" style="--d:.38s" aria-label="Pick your vibe">
+          <button type="button" class="vibe-chip active" data-vibe="all">All vibes</button>
+          <button type="button" class="vibe-chip" data-vibe="Lashes">Lash queen</button>
+          <button type="button" class="vibe-chip" data-vibe="Nails">Nail muse</button>
+          <button type="button" class="vibe-chip" data-vibe="Hair">Braid royalty</button>
+          <button type="button" class="vibe-chip" data-vibe="Glam">Soft glam</button>
+          <button type="button" class="vibe-chip surprise" id="surpriseBtn">Surprise me ✦</button>
+        </div>
       </div>
+    </section>
+
+    <div class="slot-ticker" aria-label="Open slots today">
+      <div class="slot-ticker-track" id="slotTicker"></div>
+    </div>
+
+    <section class="stories-strip reveal" id="looks">
+      <div class="section-head">
+        <h2>Today’s looks</h2>
+        <p>Tap a story — see the vibe, then book that exact service.</p>
+      </div>
+      <div class="stories-row" id="storiesRow"></div>
     </section>
 
     <section class="motion-strip reveal" id="glam">
@@ -79,6 +100,24 @@
         <p>Ladies only — nails, lashes, braids, and soft glam from our Kampala studio.</p>
       </div>
       <div class="motion-grid" id="motionGrid"></div>
+    </section>
+
+    <section class="shade-lab reveal" id="shadeLab">
+      <div class="shade-lab-inner">
+        <div class="section-head">
+          <h2>Nail shade lab</h2>
+          <p>Pick a shade — we’ll match a manicure vibe for you.</p>
+        </div>
+        <div class="shade-swatches" id="shadeSwatches"></div>
+        <div class="shade-preview" id="shadePreview">
+          <div class="shade-hand" id="shadeHand" aria-hidden="true"></div>
+          <div>
+            <strong id="shadeName">Nude glow</strong>
+            <p id="shadeHint">Soft everyday glam — pairs with Gel Manicure.</p>
+            <button type="button" class="btn-signup" id="shadeBookBtn">Book this manicure</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="categories reveal" id="categories">
@@ -107,12 +146,53 @@
       </div>
     </section>
 
+    <section class="queen-board reveal" id="queenBoard">
+      <div class="queen-card">
+        <div class="queen-media">
+          <img src="images/client-amina.jpg" alt="Queen of the day" id="queenImg" />
+          <span class="queen-badge">Queen of the day</span>
+        </div>
+        <div class="queen-copy">
+          <h2 id="queenTitle">Amina’s soft glam energy</h2>
+          <p id="queenText">Today’s muse is all about lifted lashes and clean gel tips. Steal the look in one booking.</p>
+          <div class="queen-actions">
+            <button type="button" class="btn-signup" id="queenBookBtn">Book her look</button>
+            <button type="button" class="btn-ghost-light" id="queenShuffleBtn">Shuffle muse</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="book-cta reveal" id="book">
       <h2>Ready to book?</h2>
       <p>Pick a service above, choose a free time, and confirm — your appointment is saved as <strong>Booked</strong>.</p>
       <a class="btn-signup btn-pulse" href="#offerings">View services</a>
     </section>
   </main>
+
+  <aside class="float-dock" id="floatDock" aria-label="Quick book">
+    <div>
+      <strong id="dockTitle">Next open vibe</strong>
+      <span id="dockMeta">Finding a free slot…</span>
+    </div>
+    <button type="button" class="dock-btn" id="dockBookBtn">Book fast</button>
+  </aside>
+
+  <div class="story-modal" id="storyModal" hidden>
+    <div class="story-backdrop" data-story-close></div>
+    <div class="story-card" role="dialog" aria-modal="true">
+      <button type="button" class="story-x" data-story-close aria-label="Close">×</button>
+      <div class="story-progress"><i id="storyProgress"></i></div>
+      <img id="storyImage" alt="" />
+      <div class="story-copy">
+        <strong id="storyName">Look</strong>
+        <p id="storyDesc"></p>
+        <button type="button" class="btn-signup" id="storyBookBtn">Book this look</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="sparkCanvas" class="spark-canvas" aria-hidden="true"></canvas>
 
   <footer class="site-footer">
     <div class="footer-glow" aria-hidden="true"></div>
@@ -141,7 +221,7 @@
 
       <div class="footer-col">
         <h3>Salon</h3>
-        <p id="footerSalon">Hair. Kampala</p>
+        <p id="footerSalon">Ladies. Kampala</p>
         <p>Kampala, Uganda</p>
         <p>+256 700 000 000</p>
         <p>hello@hair.ug</p>
@@ -155,7 +235,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© <span id="footerYear">2026</span> Appoint Hub · Hair. Kampala</span>
+      <span>© <span id="footerYear">2026</span> Appoint Hub · Ladies. Kampala</span>
       <a href="#top" id="backTop">Back to top ↑</a>
     </div>
   </footer>

@@ -536,7 +536,10 @@ function submitBooking(e) {
   markSlotBooked(stylistName, slotTime);
   saveStore();
   document.getElementById("bookModal").hidden = true;
+  burstSparks();
   toast(`Confirmed · ${serviceName} with ${stylistName} at ${slotTime}`);
+  renderSlotTicker();
+  updateFloatDock();
 }
 
 function fillAvailSummary() {
@@ -594,16 +597,238 @@ function initReveals() {
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 }
 
+const LOOK_STORIES = [
+  { name: "Lash lift", desc: "Feather-light lift for everyday queen energy.", service: "Lash Lift & Tint", image: "images/svc-lash-lift.jpg" },
+  { name: "Hybrid lashes", desc: "Soft drama that still feels natural.", service: "Lash Extensions", image: "images/svc-lashes.jpg" },
+  { name: "Gel tips", desc: "Clean glossy nails made for Kampala nights.", service: "Gel Manicure", image: "images/svc-nails.jpg" },
+  { name: "Pedicure glow", desc: "Spa feet reset before the weekend.", service: "Luxury Pedicure", image: "images/svc-pedicure.jpg" },
+  { name: "Knotless braids", desc: "Protective style with soft glam edges.", service: "Braids & Twists", image: "images/cat-traditional.jpg" },
+  { name: "Bridal soft glam", desc: "Hair + face finish for your big moment.", service: "Bridal / Soft Glam", image: "images/svc-bridal.jpg" },
+];
+
+const NAIL_SHADES = [
+  { name: "Nude glow", color: "#c4a484", service: "Gel Manicure", hint: "Soft everyday glam — pairs with Gel Manicure." },
+  { name: "Espresso", color: "#4a2f27", service: "Acrylic / Soft Gel Set", hint: "Deep chic — perfect with Acrylic / Soft Gel." },
+  { name: "Rouge kiss", color: "#a83b45", service: "Gel Manicure", hint: "Bold lips energy on your tips." },
+  { name: "Gold dust", color: "#c9a45a", service: "Acrylic / Soft Gel Set", hint: "Warm metallic for nights out." },
+  { name: "Milk tea", color: "#e8d5c4", service: "Gel Manicure", hint: "Quiet luxury shade for meetings." },
+  { name: "Plum velvet", color: "#6b3a55", service: "Luxury Pedicure", hint: "Rich pedicure energy for weekends." },
+];
+
+const QUEEN_LOOKS = [
+  { title: "Amina’s soft glam energy", text: "Lifted lashes and clean gel tips. Steal the look in one booking.", image: "images/client-amina.jpg", service: "Lash Extensions" },
+  { title: "Grace’s braid royalty", text: "Knotless braids with soft edges — protective and camera-ready.", image: "images/client-grace.jpg", service: "Braids & Twists" },
+  { title: "Linda’s nail muse mood", text: "Glossy gel set and a polished finish for every plan.", image: "images/client-linda.jpg", service: "Gel Manicure" },
+  { title: "Jessie’s bridal glow", text: "Soft glam hair and lashes for the main character day.", image: "images/stylist-jessie.jpg", service: "Bridal / Soft Glam" },
+];
+
+let activeStoryService = LOOK_STORIES[0].service;
+let activeShadeService = NAIL_SHADES[0].service;
+let queenIndex = 0;
+let storyTimer = null;
+
+function setDayGreeting() {
+  const hour = new Date().getHours();
+  const el = document.getElementById("dayGreeting");
+  if (!el) return;
+  const part = hour < 12 ? "Good morning, queen" : hour < 17 ? "Good afternoon, queen" : "Good evening, queen";
+  el.textContent = `${part} · Ladies only · Kampala`;
+}
+
+function renderSlotTicker() {
+  const track = document.getElementById("slotTicker");
+  if (!track) return;
+  const bits = [];
+  getAllStylists().forEach((s) => {
+    openSlots(s).slice(0, 3).forEach((slot) => {
+      bits.push(`<span><em>${slot.t}</em> open with ${s.name}</span>`);
+    });
+  });
+  if (!bits.length) bits.push("<span>All vibes booking fast — check services</span>");
+  const row = bits.join("") + bits.join("");
+  track.innerHTML = row;
+}
+
+function renderStories() {
+  const row = document.getElementById("storiesRow");
+  if (!row) return;
+  row.innerHTML = LOOK_STORIES.map((s, i) => `
+    <button type="button" class="story-bubble" data-story="${i}">
+      <div class="story-ring"><img src="${s.image}" alt="" /></div>
+      <strong>${s.name}</strong>
+    </button>
+  `).join("");
+  row.querySelectorAll("[data-story]").forEach((btn) => {
+    btn.addEventListener("click", () => openStory(Number(btn.dataset.story)));
+  });
+}
+
+function openStory(index) {
+  const story = LOOK_STORIES[index];
+  if (!story) return;
+  activeStoryService = story.service;
+  document.getElementById("storyImage").src = story.image;
+  document.getElementById("storyName").textContent = story.name;
+  document.getElementById("storyDesc").textContent = story.desc;
+  const progress = document.getElementById("storyProgress");
+  progress.style.animation = "none";
+  void progress.offsetWidth;
+  progress.style.animation = "";
+  document.getElementById("storyModal").hidden = false;
+  clearTimeout(storyTimer);
+  storyTimer = setTimeout(() => {
+    document.getElementById("storyModal").hidden = true;
+  }, 4500);
+}
+
+function renderShadeLab() {
+  const root = document.getElementById("shadeSwatches");
+  if (!root) return;
+  root.innerHTML = NAIL_SHADES.map((s, i) => `
+    <button type="button" class="shade-dot ${i === 0 ? "active" : ""}" data-shade="${i}" style="background:${s.color}" aria-label="${s.name}"></button>
+  `).join("");
+  const apply = (shade) => {
+    activeShadeService = shade.service;
+    document.getElementById("shadeHand").style.setProperty("--shade", shade.color);
+    document.getElementById("shadeName").textContent = shade.name;
+    document.getElementById("shadeHint").textContent = shade.hint;
+  };
+  apply(NAIL_SHADES[0]);
+  root.querySelectorAll("[data-shade]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      root.querySelectorAll(".shade-dot").forEach((d) => d.classList.remove("active"));
+      btn.classList.add("active");
+      apply(NAIL_SHADES[Number(btn.dataset.shade)]);
+    });
+  });
+}
+
+function renderQueen(index = 0) {
+  queenIndex = (index + QUEEN_LOOKS.length) % QUEEN_LOOKS.length;
+  const q = QUEEN_LOOKS[queenIndex];
+  document.getElementById("queenImg").src = q.image;
+  document.getElementById("queenTitle").textContent = q.title;
+  document.getElementById("queenText").textContent = q.text;
+}
+
+function nextOpenBooking() {
+  const stylists = getAllStylists();
+  for (const s of stylists) {
+    const open = openSlots(s)[0];
+    if (open) {
+      const service = (s.tags && s.tags[0]) || enrichServices()[0]?.name;
+      return { stylist: s.name, slot: open.t, service };
+    }
+  }
+  return { stylist: null, slot: null, service: enrichServices()[0]?.name };
+}
+
+function updateFloatDock() {
+  const next = nextOpenBooking();
+  const meta = document.getElementById("dockMeta");
+  const title = document.getElementById("dockTitle");
+  if (!meta || !title) return;
+  if (next.slot) {
+    title.textContent = "Next open vibe";
+    meta.textContent = `${next.slot} · ${next.stylist} · ${next.service}`;
+  } else {
+    title.textContent = "Browse glam";
+    meta.textContent = "Pick a service and lock your time";
+  }
+}
+
+function setVibe(vibe) {
+  document.querySelectorAll(".vibe-chip").forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.vibe === vibe || (vibe === "all" && chip.dataset.vibe === "all"));
+  });
+  const cat = document.getElementById("filterCategory");
+  cat.value = vibe === "all" ? "all" : vibe;
+  renderServiceFilter();
+  renderOffers();
+  document.getElementById("offerings").scrollIntoView({ behavior: "smooth" });
+}
+
+function surpriseMe() {
+  const list = enrichServices();
+  if (!list.length) return;
+  const pick = list[Math.floor(Math.random() * list.length)];
+  toast(`Surprise vibe · ${pick.name}`);
+  openBookModal(pick.name);
+}
+
+function enableCardTilt() {
+  document.querySelectorAll(".offer-card").forEach((card) => {
+    card.classList.add("tilt");
+    card.addEventListener("pointermove", (e) => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-6px)`;
+    });
+    card.addEventListener("pointerleave", () => {
+      card.style.transform = "";
+    });
+  });
+}
+
+function burstSparks() {
+  const canvas = document.getElementById("sparkCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const parts = Array.from({ length: 48 }, () => ({
+    x: window.innerWidth / 2,
+    y: window.innerHeight * 0.4,
+    vx: (Math.random() - 0.5) * 10,
+    vy: Math.random() * -8 - 2,
+    life: 1,
+    color: ["#f0c3a0", "#e8894a", "#fff", "#c9a45"][Math.floor(Math.random() * 4)],
+  }));
+  let frame = 0;
+  const tick = () => {
+    frame += 1;
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    parts.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.18;
+      p.life -= 0.018;
+      ctx.globalAlpha = Math.max(p.life, 0);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    if (frame < 70) requestAnimationFrame(tick);
+    else {
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ctx.globalAlpha = 1;
+    }
+  };
+  tick();
+}
+
 /* Init */
 loadStore();
 renderCategories();
 renderMotionClips();
 renderServiceFilter();
 renderOffers();
+enableCardTilt();
 initHeroVideos();
+setDayGreeting();
+renderSlotTicker();
+renderStories();
+renderShadeLab();
+renderQueen(0);
+updateFloatDock();
 requestAnimationFrame(() => {
   document.body.classList.add("page-enter");
   initReveals();
+  setTimeout(() => document.getElementById("floatDock")?.classList.add("show"), 900);
 });
 
 const footerYear = document.getElementById("footerYear");
@@ -623,6 +848,7 @@ document.getElementById("viewAllBtn").addEventListener("click", () => {
   showAllOffers = !showAllOffers;
   document.getElementById("viewAllBtn").textContent = showAllOffers ? "Show less" : "View all";
   renderOffers();
+  enableCardTilt();
 });
 document.getElementById("catPrev").addEventListener("click", () => {
   const track = document.getElementById("catTrack");
@@ -665,5 +891,39 @@ document.getElementById("toConfirmBtn").addEventListener("click", () => {
 document.getElementById("backDetailsBtn").addEventListener("click", () => setBookStep(2));
 document.getElementById("bookForm").addEventListener("submit", submitBooking);
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") document.getElementById("bookModal").hidden = true;
+  if (e.key === "Escape") {
+    document.getElementById("bookModal").hidden = true;
+    document.getElementById("storyModal").hidden = true;
+  }
 });
+
+document.querySelectorAll(".vibe-chip[data-vibe]").forEach((chip) => {
+  chip.addEventListener("click", () => setVibe(chip.dataset.vibe));
+});
+document.getElementById("surpriseBtn")?.addEventListener("click", surpriseMe);
+document.getElementById("shadeBookBtn")?.addEventListener("click", () => openBookModal(activeShadeService));
+document.getElementById("storyBookBtn")?.addEventListener("click", () => {
+  document.getElementById("storyModal").hidden = true;
+  openBookModal(activeStoryService);
+});
+document.querySelectorAll("[data-story-close]").forEach((el) => {
+  el.addEventListener("click", () => {
+    clearTimeout(storyTimer);
+    document.getElementById("storyModal").hidden = true;
+  });
+});
+document.getElementById("queenBookBtn")?.addEventListener("click", () => openBookModal(QUEEN_LOOKS[queenIndex].service));
+document.getElementById("queenShuffleBtn")?.addEventListener("click", () => {
+  renderQueen(queenIndex + 1);
+  toast("New muse unlocked");
+});
+document.getElementById("dockBookBtn")?.addEventListener("click", () => {
+  const next = nextOpenBooking();
+  if (next.service) openBookModal(next.service, { stylist: next.stylist, slot: next.slot });
+});
+
+const originalRenderOffers = renderOffers;
+renderOffers = function patchedRenderOffers() {
+  originalRenderOffers();
+  enableCardTilt();
+};
