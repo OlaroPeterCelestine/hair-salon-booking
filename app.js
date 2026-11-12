@@ -68,12 +68,67 @@ let stylistsPage2 = [
   },
 ];
 
-let staff = [
-  { name: "Maximillian Neal", avatar: "https://i.pravatar.cc/72?img=13", status: "active", label: "Active", role: "Senior Stylist", phone: "+256 700 111 222", email: "max@hair.ug", specialty: "Men's cuts & beard" },
-  { name: "Angelina Haynes", avatar: "https://i.pravatar.cc/72?img=24", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights" },
-  { name: "Jessica McGee", avatar: "https://i.pravatar.cc/72?img=32", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts" },
-  { name: "Jessie Rae", avatar: "https://i.pravatar.cc/72?img=45", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry" },
+const SHIFT_DAYS = [
+  { key: "mon", label: "Mon", short: "M" },
+  { key: "tue", label: "Tue", short: "T" },
+  { key: "wed", label: "Wed", short: "W" },
+  { key: "thu", label: "Thu", short: "T" },
+  { key: "fri", label: "Fri", short: "F" },
+  { key: "sat", label: "Sat", short: "S" },
+  { key: "sun", label: "Sun", short: "S" },
 ];
+
+const SHIFT_PRESETS = {
+  off: { label: "Off", hours: "—", cls: "shift-off" },
+  morning: { label: "Morning", hours: "8:00–14:00", cls: "shift-morning" },
+  afternoon: { label: "Afternoon", hours: "12:00–18:00", cls: "shift-afternoon" },
+  full: { label: "Full day", hours: "8:00–18:00", cls: "shift-full" },
+};
+
+function defaultShifts(pattern = "weekday-full") {
+  const shifts = {};
+  SHIFT_DAYS.forEach((d, i) => {
+    if (pattern === "weekday-full") shifts[d.key] = i < 5 ? "full" : "off";
+    else if (pattern === "weekend") shifts[d.key] = i >= 5 ? "full" : i < 3 ? "morning" : "off";
+    else if (pattern === "afternoon") shifts[d.key] = i < 6 ? "afternoon" : "off";
+    else shifts[d.key] = "off";
+  });
+  return shifts;
+}
+
+function ensureStaffShifts() {
+  let changed = false;
+  staff.forEach((s) => {
+    if (!s.shifts || typeof s.shifts !== "object") {
+      s.shifts = defaultShifts(s.status === "vacation" ? "off" : "weekday-full");
+      changed = true;
+    }
+    SHIFT_DAYS.forEach((d) => {
+      if (!SHIFT_PRESETS[s.shifts[d.key]]) {
+        s.shifts[d.key] = "off";
+        changed = true;
+      }
+    });
+  });
+  return changed;
+}
+
+function todayShiftKey() {
+  return SHIFT_DAYS[(new Date().getDay() + 6) % 7].key; // JS Sun=0 → our mon-first
+}
+
+function shiftInfo(code) {
+  return SHIFT_PRESETS[code] || SHIFT_PRESETS.off;
+}
+
+let staff = [
+  { name: "Maximillian Neal", avatar: "https://i.pravatar.cc/72?img=13", status: "active", label: "Active", role: "Senior Stylist", phone: "+256 700 111 222", email: "max@hair.ug", specialty: "Men's cuts & beard", shifts: { mon: "full", tue: "full", wed: "full", thu: "full", fri: "full", sat: "morning", sun: "off" } },
+  { name: "Angelina Haynes", avatar: "https://i.pravatar.cc/72?img=24", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights", shifts: { mon: "afternoon", tue: "afternoon", wed: "off", thu: "afternoon", fri: "afternoon", sat: "full", sun: "off" } },
+  { name: "Jessica McGee", avatar: "https://i.pravatar.cc/72?img=32", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts", shifts: defaultShifts("off") },
+  { name: "Jessie Rae", avatar: "https://i.pravatar.cc/72?img=45", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry", shifts: { mon: "full", tue: "full", wed: "morning", thu: "full", fri: "full", sat: "off", sun: "off" } },
+];
+
+let shiftEditIdx = null;
 
 let payments = [
   { id: "INV-2041", client: "Mae Jones", avatar: "https://i.pravatar.cc/80?img=5", service: "Hair Styling", amount: "UGX 185,000", method: "Mobile Money", date: "22 Jan 2026", status: "paid", statusLabel: "Paid" },
@@ -214,6 +269,7 @@ function loadStore() {
     if (Array.isArray(data.stylistsPage2)) stylistsPage2 = data.stylistsPage2;
     if (typeof data.invoiceSeq === "number") invoiceSeq = data.invoiceSeq;
     if (typeof data.nextApptId === "number") nextApptId = data.nextApptId;
+    ensureStaffShifts();
   } catch (err) {
     console.warn("Could not load localStorage", err);
   }
@@ -1194,7 +1250,91 @@ function statusLabelForStaff(status) {
   return status === "active" ? "Active" : status === "off" ? "Off duty" : "On vacation";
 }
 
+function openShiftModal(idx) {
+  shiftEditIdx = idx;
+  const emp = staff[idx];
+  if (!emp) return;
+  ensureStaffShifts();
+  document.getElementById("shiftModalTitle").textContent = `${emp.name}'s shifts`;
+  document.getElementById("shiftModalSub").textContent = "Pick a shift for each day of the week";
+  document.getElementById("shiftEditGrid").innerHTML = SHIFT_DAYS.map((d) => {
+    const val = emp.shifts[d.key] || "off";
+    return `
+      <label class="shift-day-field">
+        <span class="shift-day-label">${d.label}</span>
+        <select name="${d.key}">
+          ${Object.entries(SHIFT_PRESETS).map(([code, info]) => `
+            <option value="${code}" ${code === val ? "selected" : ""}>${info.label} · ${info.hours}</option>
+          `).join("")}
+        </select>
+      </label>
+    `;
+  }).join("");
+  openModal("shiftModal");
+}
+
+function renderShiftWeekStrip(emp) {
+  ensureStaffShifts();
+  const today = todayShiftKey();
+  return `
+    <div class="shift-week" aria-label="Weekly shifts">
+      ${SHIFT_DAYS.map((d) => {
+        const info = shiftInfo(emp.shifts[d.key]);
+        return `
+          <div class="shift-chip ${info.cls} ${d.key === today ? "is-today" : ""}" title="${d.label}: ${info.label} ${info.hours}">
+            <span class="shift-chip-day">${d.short}</span>
+            <span class="shift-chip-hours">${info.hours === "—" ? "Off" : info.hours.replace(":00", "")}</span>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderShiftRoster() {
+  ensureStaffShifts();
+  const today = todayShiftKey();
+  const onShiftToday = staff.filter((s) => shiftInfo(s.shifts?.[today]).hours !== "—").length;
+  return `
+    <section class="panel shift-roster">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Weekly shifts</span>
+          <span class="panel-date">${onShiftToday} on the floor today</span>
+        </div>
+      </div>
+      <div class="shift-roster-scroll">
+        <table class="shift-roster-table">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              ${SHIFT_DAYS.map((d) => `<th class="${d.key === today ? "is-today" : ""}">${d.label}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${staff.map((s, idx) => `
+              <tr>
+                <td>
+                  <button type="button" class="shift-roster-name emp-edit-shifts" data-idx="${idx}">
+                    <img src="${s.avatar}" alt="" />
+                    <span>${s.name}</span>
+                  </button>
+                </td>
+                ${SHIFT_DAYS.map((d) => {
+                  const info = shiftInfo(s.shifts[d.key]);
+                  return `<td class="${d.key === today ? "is-today" : ""}"><span class="shift-pill ${info.cls}">${info.hours === "—" ? "Off" : info.hours}</span></td>`;
+                }).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
 function renderEmployees() {
+  ensureStaffShifts();
   const ui = tableUI.employees;
   let filtered = staff.map((s, idx) => ({ ...s, idx }));
   if (ui.status !== "all") filtered = filtered.filter((s) => s.status === ui.status);
@@ -1208,6 +1348,8 @@ function renderEmployees() {
   const roles = [...new Set(staff.map((s) => s.role))];
   const meta = paginate(filtered, ui.page, ui.size);
   ui.page = meta.page;
+  const today = todayShiftKey();
+  const onShiftToday = staff.filter((s) => shiftInfo(s.shifts?.[today]).hours !== "—").length;
 
   document.getElementById("page-employees").innerHTML = `
     <div class="toolbar table-toolbar">
@@ -1228,11 +1370,14 @@ function renderEmployees() {
     <div class="stats">
       <div class="stat-card"><div class="stat-label">Team size</div><div class="stat-value">${staff.length}</div><div class="stat-sub">Stylists & specialists</div></div>
       <div class="stat-card"><div class="stat-label">On duty</div><div class="stat-value">${staff.filter((s) => s.status === "active").length}</div><div class="stat-sub">Active now</div></div>
-      <div class="stat-card"><div class="stat-label">Off duty</div><div class="stat-value">${staff.filter((s) => s.status === "off").length}</div><div class="stat-sub">Today</div></div>
+      <div class="stat-card"><div class="stat-label">Shifts today</div><div class="stat-value">${onShiftToday}</div><div class="stat-sub">Scheduled on floor</div></div>
       <div class="stat-card"><div class="stat-label">On leave</div><div class="stat-value">${staff.filter((s) => s.status === "vacation").length}</div><div class="stat-sub">Vacation</div></div>
     </div>
+    ${renderShiftRoster()}
     <div class="cards-grid">
-      ${meta.slice.map((s) => `
+      ${meta.slice.map((s) => {
+        const todayInfo = shiftInfo(s.shifts[today]);
+        return `
         <article class="entity-card">
           <div class="entity-top">
             <img src="${s.avatar}" alt="${s.name}" />
@@ -1244,15 +1389,19 @@ function renderEmployees() {
           </div>
           <div class="entity-meta">
             <div>Specialty: <strong>${s.specialty}</strong></div>
+            <div>Today: <strong class="today-shift ${todayInfo.cls}">${todayInfo.label} · ${todayInfo.hours}</strong></div>
             <div>${s.phone}</div>
             <div>${s.email}</div>
           </div>
+          ${renderShiftWeekStrip(s)}
           <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn-ghost emp-edit-shifts" data-idx="${s.idx}">Edit shifts</button>
             <button type="button" class="btn-ghost emp-schedule" data-name="${s.name}">View schedule</button>
             <button type="button" class="btn-ghost emp-toggle-status" data-idx="${s.idx}">Change status</button>
           </div>
         </article>
-      `).join("") || `<div class="empty-state">No employees match filters.</div>`}
+      `;
+      }).join("") || `<div class="empty-state">No employees match filters.</div>`}
     </div>
     ${paginationBar(meta, "employees")}
   `;
@@ -1270,6 +1419,10 @@ function renderEmployees() {
   document.getElementById("addEmployeeBtn")?.addEventListener("click", () => {
     document.getElementById("employeeForm").reset();
     openModal("employeeModal");
+  });
+
+  document.querySelectorAll(".emp-edit-shifts").forEach((btn) => {
+    btn.addEventListener("click", () => openShiftModal(Number(btn.dataset.idx)));
   });
 
   document.querySelectorAll(".emp-schedule").forEach((btn) => {
@@ -1718,6 +1871,7 @@ function handleSearch(q) {
 
 /* ——— Init ——— */
 loadStore();
+if (ensureStaffShifts()) saveStore();
 hydrateIcons();
 renderAppointments();
 renderAvailability();
@@ -1852,6 +2006,7 @@ document.getElementById("employeeForm")?.addEventListener("submit", (e) => {
     phone: String(fd.get("phone")),
     email: String(fd.get("email")),
     specialty: String(fd.get("specialty")),
+    shifts: defaultShifts(status === "vacation" ? "off" : "weekday-full"),
   };
   staff.unshift(emp);
   saveStore();
@@ -1859,6 +2014,21 @@ document.getElementById("employeeForm")?.addEventListener("submit", (e) => {
   toast(`${emp.name} added to team`);
   if (currentPage === "employees") renderEmployees();
   renderStaff();
+});
+
+document.getElementById("shiftForm")?.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (shiftEditIdx == null || !staff[shiftEditIdx]) return;
+  const fd = new FormData(e.target);
+  const shifts = {};
+  SHIFT_DAYS.forEach((d) => {
+    shifts[d.key] = String(fd.get(d.key) || "off");
+  });
+  staff[shiftEditIdx].shifts = shifts;
+  saveStore();
+  closeModal("shiftModal");
+  toast(`Shifts updated for ${staff[shiftEditIdx].name}`);
+  if (currentPage === "employees") renderEmployees();
 });
 
 document.getElementById("clientForm")?.addEventListener("submit", (e) => {

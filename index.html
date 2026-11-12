@@ -308,6 +308,25 @@
     </div>
   </div>
 
+  <!-- Modal: Employee shifts -->
+  <div class="modal" id="shiftModal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card modal-card-wide" role="dialog" aria-labelledby="shiftModalTitle">
+      <div class="modal-head">
+        <h2 id="shiftModalTitle">Weekly shifts</h2>
+        <button type="button" class="icon-btn modal-x" data-close-modal aria-label="Close">×</button>
+      </div>
+      <form id="shiftForm" class="modal-body">
+        <p class="shift-modal-sub" id="shiftModalSub">Set working hours for each day</p>
+        <div class="shift-edit-grid" id="shiftEditGrid"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close-modal>Cancel</button>
+          <button type="submit" class="btn-primary">Save shifts</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal: Add client -->
   <div class="modal" id="clientModal" hidden>
     <div class="modal-backdrop" data-close-modal></div>
