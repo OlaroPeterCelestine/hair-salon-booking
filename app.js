@@ -26,7 +26,7 @@ function avatarForName(name) {
 
 const STYLIST_AVATARS = {
   "Jessica McGee": "images/stylist-jessica.jpg",
-  "Maximillian Neal": "images/stylist-max.jpg",
+  "Amina Nakato": "images/client-amina.jpg",
   "Angelina Haynes": "images/stylist-angelina.jpg",
   "Jessie Rae": "images/stylist-jessie.jpg",
 };
@@ -64,14 +64,14 @@ function migrateAvatars() {
 
 let appointments = [
   { id: 1, time: "9:00 – 10:30", client: "Mae Jones", avatar: "images/client-mae.jpg", service: "Hair Styling", master: "Jessie Rae", price: "UGX 185,000", status: "in-progress", statusLabel: "In Progress", day: 0 },
-  { id: 2, time: "11:00 – 12:00", client: "Kara Thornton", avatar: "images/client-kara.jpg", service: "Haircut", master: "Maximillian Neal", price: "UGX 165,000", status: "arrived", statusLabel: "Arrived", day: 0 },
+  { id: 2, time: "11:00 – 12:00", client: "Kara Thornton", avatar: "images/client-kara.jpg", service: "Gel Manicure", master: "Amina Nakato", price: "UGX 95,000", status: "arrived", statusLabel: "Arrived", day: 0 },
   { id: 3, time: "12:45 – 13:45", client: "Curtis Walters", avatar: "images/client-curtis.jpg", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 0 },
   { id: 4, time: "14:00 – 15:45", client: "Alejandra Casey", avatar: "images/client-alejandra.jpg", service: "Blow-dry", master: "Jessie Rae", price: "UGX 165,000", status: "past", statusLabel: "Past", day: 0 },
-  { id: 5, time: "14:00 – 15:45", client: "Leyton Landry", avatar: "images/client-leyton.jpg", service: "Hair Coloring", master: "Maximillian Neal", price: "UGX 330,000", status: "past", statusLabel: "Past", day: 0 },
+  { id: 5, time: "14:00 – 15:45", client: "Grace Atim", avatar: "images/client-grace.jpg", service: "Luxury Pedicure", master: "Amina Nakato", price: "UGX 120,000", status: "past", statusLabel: "Past", day: 0 },
   { id: 6, time: "10:00 – 11:00", client: "Molly Hawkins", avatar: "images/client-molly.jpg", service: "Women's Haircut", master: "Jessica McGee", price: "UGX 150,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
-  { id: 7, time: "13:00 – 14:30", client: "Devon Price", avatar: "images/client-devon.jpg", service: "Beard Trim", master: "Maximillian Neal", price: "UGX 80,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
+  { id: 7, time: "13:00 – 14:30", client: "Linda Akello", avatar: "images/client-linda.jpg", service: "Acrylic / Soft Gel Set", master: "Amina Nakato", price: "UGX 160,000", status: "confirmed", statusLabel: "Confirmed", day: 1 },
   { id: 8, time: "9:30 – 11:00", client: "Sienna Brooks", avatar: "images/client-sienna.jpg", service: "Hair Coloring", master: "Angelina Haynes", price: "UGX 260,000", status: "confirmed", statusLabel: "Confirmed", day: 2 },
-  { id: 9, time: "15:00 – 16:00", client: "Noah Okello", avatar: "images/client-noah.jpg", service: "Men's Haircut", master: "Maximillian Neal", price: "UGX 120,000", status: "confirmed", statusLabel: "Confirmed", day: 3 },
+  { id: 9, time: "15:00 – 16:00", client: "Amina Nalwoga", avatar: "images/client-amina.jpg", service: "Lash Extensions", master: "Angelina Haynes", price: "UGX 220,000", status: "confirmed", statusLabel: "Confirmed", day: 3 },
   { id: 10, time: "11:30 – 12:30", client: "Amina Nalwoga", avatar: "images/client-amina.jpg", service: "Blow-dry", master: "Jessie Rae", price: "UGX 165,000", status: "confirmed", statusLabel: "Confirmed", day: 4 },
 ];
 
@@ -97,9 +97,9 @@ let stylistsPage1 = [
     ],
   },
   {
-    name: "Maximillian Neal",
-    avatar: "images/stylist-max.jpg",
-    tags: ["Men's Haircut", "Beard Trim"],
+    name: "Amina Nakato",
+    avatar: "images/client-amina.jpg",
+    tags: ["Gel Manicure", "Luxury Pedicure"],
     date: "Mon, 22 Jan",
     slots: [
       { t: "8:00", state: "" }, { t: "9:00", state: "" }, { t: "10:00", state: "booked" }, { t: "11:00", state: "booked" },
@@ -112,7 +112,7 @@ let stylistsPage2 = [
   {
     name: "Angelina Haynes",
     avatar: "images/stylist-angelina.jpg",
-    tags: ["Hair Coloring", "Blow-dry"],
+    tags: ["Lash Extensions", "Acrylic / Soft Gel Set"],
     date: "Mon, 22 Jan",
     slots: [
       { t: "9:00", state: "" }, { t: "10:00", state: "" }, { t: "11:00", state: "booked" }, { t: "12:00", state: "" },
@@ -122,7 +122,7 @@ let stylistsPage2 = [
   {
     name: "Jessie Rae",
     avatar: "images/stylist-jessie.jpg",
-    tags: ["Hair Styling", "Blow-dry"],
+    tags: ["Braids & Twists", "Bridal / Soft Glam"],
     date: "Mon, 22 Jan",
     slots: [
       { t: "8:00", state: "booked" }, { t: "9:00", state: "booked" }, { t: "11:00", state: "" }, { t: "12:00", state: "" },
@@ -185,7 +185,7 @@ function shiftInfo(code) {
 }
 
 let staff = [
-  { name: "Maximillian Neal", avatar: "images/stylist-max.jpg", status: "active", label: "Active", role: "Senior Stylist", phone: "+256 700 111 222", email: "max@hair.ug", specialty: "Men's cuts & beard", shifts: { mon: "full", tue: "full", wed: "full", thu: "full", fri: "full", sat: "morning", sun: "off" } },
+  { name: "Amina Nakato", avatar: "images/client-amina.jpg", status: "active", label: "Active", role: "Nail Artist", phone: "+256 700 111 222", email: "amina@hair.ug", specialty: "Nails & pedicure", shifts: { mon: "full", tue: "full", wed: "full", thu: "full", fri: "full", sat: "morning", sun: "off" } },
   { name: "Angelina Haynes", avatar: "images/stylist-angelina.jpg", status: "off", label: "Off duty", role: "Color Specialist", phone: "+256 700 333 444", email: "angelina@hair.ug", specialty: "Color & highlights", shifts: { mon: "afternoon", tue: "afternoon", wed: "off", thu: "afternoon", fri: "afternoon", sat: "full", sun: "off" } },
   { name: "Jessica McGee", avatar: "images/stylist-jessica.jpg", status: "vacation", label: "On vacation", role: "Stylist", phone: "+256 700 555 666", email: "jessica@hair.ug", specialty: "Women's cuts", shifts: defaultShifts("off") },
   { name: "Jessie Rae", avatar: "images/stylist-jessie.jpg", status: "active", label: "Active", role: "Creative Director", phone: "+256 700 777 888", email: "jessie@hair.ug", specialty: "Styling & blow-dry", shifts: { mon: "full", tue: "full", wed: "morning", thu: "full", fri: "full", sat: "off", sun: "off" } },
@@ -200,10 +200,10 @@ let payments = [
   { id: "INV-2038", client: "Alejandra Casey", avatar: "images/client-alejandra.jpg", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "21 Jan 2026", status: "paid", statusLabel: "Paid" },
   { id: "INV-2037", client: "Leyton Landry", avatar: "images/client-leyton.jpg", service: "Hair Coloring", amount: "UGX 330,000", method: "Card", date: "20 Jan 2026", status: "refunded", statusLabel: "Refunded" },
   { id: "INV-2036", client: "Molly Hawkins", avatar: "images/client-molly.jpg", service: "Hair Coloring", amount: "UGX 260,000", method: "Mobile Money", date: "18 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2035", client: "Devon Price", avatar: "images/client-devon.jpg", service: "Men's Haircut", amount: "UGX 120,000", method: "Cash", date: "16 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2035", client: "Devon Price", avatar: "images/client-devon.jpg", service: "Gel Manicure", amount: "UGX 95,000", method: "Cash", date: "16 Jan 2026", status: "paid", statusLabel: "Paid" },
   { id: "INV-2034", client: "Amina Nalwoga", avatar: "images/client-amina.jpg", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "15 Jan 2026", status: "pending", statusLabel: "Pending" },
   { id: "INV-2033", client: "Sienna Brooks", avatar: "images/client-sienna.jpg", service: "Hair Styling", amount: "UGX 185,000", method: "Card", date: "14 Jan 2026", status: "paid", statusLabel: "Paid" },
-  { id: "INV-2032", client: "Noah Okello", avatar: "images/client-noah.jpg", service: "Men's Haircut", amount: "UGX 120,000", method: "Cash", date: "12 Jan 2026", status: "paid", statusLabel: "Paid" },
+  { id: "INV-2032", client: "Noah Okello", avatar: "images/client-noah.jpg", service: "Gel Manicure", amount: "UGX 120,000", method: "Cash", date: "12 Jan 2026", status: "paid", statusLabel: "Paid" },
   { id: "INV-2031", client: "Mae Jones", avatar: "images/client-mae.jpg", service: "Blow-dry", amount: "UGX 165,000", method: "Mobile Money", date: "10 Jan 2026", status: "paid", statusLabel: "Paid" },
   { id: "INV-2030", client: "Kara Thornton", avatar: "images/client-kara.jpg", service: "Hair Coloring", amount: "UGX 260,000", method: "Card", date: "8 Jan 2026", status: "refunded", statusLabel: "Refunded" },
 ];
@@ -228,26 +228,27 @@ let clients = [
 let services = [
   { name: "Lash Extensions", desc: "Classic or hybrid extensions", duration: "90–120 min", price: "UGX 220,000", category: "Lashes" },
   { name: "Lash Lift & Tint", desc: "Lift, curl, and tint natural lashes", duration: "60 min", price: "UGX 140,000", category: "Lashes" },
-  { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts" },
-  { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling" },
-  { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Styling" },
-  { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Color" },
-  { name: "Highlights / Balayage", desc: "Custom lightening technique", duration: "2–3 hrs", price: "UGX 330,000", category: "Color" },
-  { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Styling" },
-  { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Care" },
-  { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts" },
-  { name: "Beard Trim", desc: "Shape and tidy beard", duration: "20 min", price: "UGX 80,000", category: "Grooming" },
+  { name: "Gel Manicure", desc: "Shape, gel polish & cuticle care", duration: "45–60 min", price: "UGX 95,000", category: "Nails" },
+  { name: "Luxury Pedicure", desc: "Soak, scrub, polish & massage", duration: "60–75 min", price: "UGX 120,000", category: "Nails" },
+  { name: "Acrylic / Soft Gel Set", desc: "Full set with soft glam finish", duration: "90–120 min", price: "UGX 160,000", category: "Nails" },
+  { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Hair" },
+  { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Hair" },
+  { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Hair" },
+  { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Hair" },
+  { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Hair" },
+  { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Glam" },
+  { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Hair" },
 ];
 
 let reviews = [
   { name: "Molly Hawkins", avatar: "images/client-molly.jpg", date: "2 days ago", stars: 5, service: "Hair Coloring · Jessie Rae", text: "Absolutely loved my color! Jessie took the time to understand exactly what I wanted and the result is perfect." },
-  { name: "Devon Price", avatar: "images/client-devon.jpg", date: "4 days ago", stars: 5, service: "Men's Haircut · Maximillian Neal", text: "Clean cut, great vibe, and on time. Already booked my next appointment." },
+  { name: "Devon Price", avatar: "images/client-devon.jpg", date: "4 days ago", stars: 5, service: "Gel Manicure · Amina Nakato", text: "Nails came out clean and glossy. Booking again next week." },
   { name: "Sienna Brooks", avatar: "images/client-sienna.jpg", date: "1 week ago", stars: 4, service: "Blow-dry · Angelina Haynes", text: "Salon feels calm and professional. Blow-dry lasted through a windy week — impressed!" },
   { name: "Amina Nalwoga", avatar: "images/client-amina.jpg", date: "1 week ago", stars: 5, service: "Women's Haircut · Jessica McGee", text: "Best cut I've had in Kampala. Jessica listens and the finish is always sharp." },
-  { name: "Noah Okello", avatar: "images/client-noah.jpg", date: "2 weeks ago", stars: 5, service: "Beard Trim · Maximillian Neal", text: "Quick, precise, and friendly. Worth every shilling." },
+  { name: "Noah Okello", avatar: "images/client-noah.jpg", date: "2 weeks ago", stars: 5, service: "Luxury Pedicure · Amina Nakato", text: "Pedicure was so relaxing — worth every shilling." },
   { name: "Kara Thornton", avatar: "images/client-kara.jpg", date: "2 weeks ago", stars: 4, service: "Hair Styling · Jessie Rae", text: "Looked amazing for my event. Booking online was easy too." },
   { name: "Grace Atim", avatar: "images/client-grace.jpg", date: "3 weeks ago", stars: 5, service: "Highlights / Balayage · Angelina Haynes", text: "Color came out exactly as we discussed. Soft and natural." },
-  { name: "Brian Mugisha", avatar: "images/client-brian.jpg", date: "3 weeks ago", stars: 3, service: "Men's Haircut · Maximillian Neal", text: "Good cut but waited a bit longer than expected." },
+  { name: "Brian Mugisha", avatar: "images/client-brian.jpg", date: "3 weeks ago", stars: 3, service: "Gel Manicure · Amina Nakato", text: "Loved the gel set, just waited a bit longer than expected." },
   { name: "Linda Akello", avatar: "images/client-linda.jpg", date: "1 month ago", stars: 5, service: "Deep Conditioning · Jessie Rae", text: "Hair feels healthier already. Will be back." },
 ];
 
@@ -340,10 +341,18 @@ function loadStore() {
       if (STATUS_LABELS[a.status]) a.statusLabel = STATUS_LABELS[a.status];
     });
     let seedChanged = migrateAvatars();
+    const menOnly = new Set(["Men's Haircut", "Beard Trim", "Haircut"]);
+    const beforeLen = services.length;
+    services = services.filter((s) => !menOnly.has(s.name) && s.category !== "Grooming");
+    if (services.length !== beforeLen) seedChanged = true;
     const seedServices = [
       { name: "Lash Extensions", desc: "Classic or hybrid extensions", duration: "90–120 min", price: "UGX 220,000", category: "Lashes" },
       { name: "Lash Lift & Tint", desc: "Lift, curl, and tint natural lashes", duration: "60 min", price: "UGX 140,000", category: "Lashes" },
-      { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Styling" },
+      { name: "Gel Manicure", desc: "Shape, gel polish & cuticle care", duration: "45–60 min", price: "UGX 95,000", category: "Nails" },
+      { name: "Luxury Pedicure", desc: "Soak, scrub, polish & massage", duration: "60–75 min", price: "UGX 120,000", category: "Nails" },
+      { name: "Acrylic / Soft Gel Set", desc: "Full set with soft glam finish", duration: "90–120 min", price: "UGX 160,000", category: "Nails" },
+      { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Hair" },
+      { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Glam" },
     ];
     seedServices.forEach((svc) => {
       if (!services.some((s) => s.name === svc.name)) {

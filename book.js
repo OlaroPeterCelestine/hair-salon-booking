@@ -26,19 +26,21 @@ function avatarForName(name) {
   return AVATAR_POOL[h % AVATAR_POOL.length] || AVATAR_FALLBACK;
 }
 
+const MEN_ONLY_SERVICES = new Set(["Men's Haircut", "Beard Trim", "Haircut"]);
+
 const DEFAULT_SERVICES = [
   { name: "Lash Extensions", desc: "Classic or hybrid extensions", duration: "90–120 min", price: "UGX 220,000", category: "Lashes", rating: 5.0, reviews: 21, discount: "10% off", image: "images/svc-lashes.jpg" },
   { name: "Lash Lift & Tint", desc: "Lift, curl, and tint natural lashes", duration: "60 min", price: "UGX 140,000", category: "Lashes", rating: 4.9, reviews: 16, discount: null, image: "images/svc-lash-lift.jpg" },
-  { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
-  { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Styling", rating: 5.0, reviews: 24, discount: "10% off", image: "images/cat-traditional.jpg" },
-  { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling", rating: 5.0, reviews: 8, discount: "10% off", image: "images/svc-styling.jpg" },
-  { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Styling", rating: 4.8, reviews: 10, discount: null, image: "images/svc-blowdry.jpg" },
-  { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Color", rating: 5.0, reviews: 15, discount: "15% off", image: "images/svc-color.jpg" },
-  { name: "Highlights / Balayage", desc: "Custom lightening technique", duration: "2–3 hrs", price: "UGX 330,000", category: "Color", rating: 4.9, reviews: 9, discount: null, image: "images/svc-balayage.jpg" },
-  { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Styling", rating: 5.0, reviews: 11, discount: "10% off", image: "images/svc-bridal.jpg" },
-  { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Care", rating: 4.8, reviews: 7, discount: "10% off", image: "images/svc-conditioning.jpg" },
-  { name: "Men's Haircut", desc: "Precision cut with finish", duration: "30–45 min", price: "UGX 120,000", category: "Cuts", rating: 4.9, reviews: 18, discount: null, image: "images/svc-mens-cut.jpg" },
-  { name: "Beard Trim", desc: "Shape and tidy beard", duration: "20 min", price: "UGX 80,000", category: "Grooming", rating: 4.7, reviews: 11, discount: null, image: "images/svc-beard.jpg" },
+  { name: "Gel Manicure", desc: "Shape, gel polish & cuticle care", duration: "45–60 min", price: "UGX 95,000", category: "Nails", rating: 5.0, reviews: 28, discount: "10% off", image: "images/svc-nails.jpg" },
+  { name: "Luxury Pedicure", desc: "Soak, scrub, polish & massage", duration: "60–75 min", price: "UGX 120,000", category: "Nails", rating: 4.9, reviews: 19, discount: null, image: "images/svc-pedicure.jpg" },
+  { name: "Acrylic / Soft Gel Set", desc: "Full set with soft glam finish", duration: "90–120 min", price: "UGX 160,000", category: "Nails", rating: 4.9, reviews: 17, discount: "10% off", image: "images/cat-nails.jpg" },
+  { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Hair", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
+  { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Hair", rating: 5.0, reviews: 24, discount: "10% off", image: "images/cat-traditional.jpg" },
+  { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Hair", rating: 5.0, reviews: 8, discount: "10% off", image: "images/svc-styling.jpg" },
+  { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Hair", rating: 4.8, reviews: 10, discount: null, image: "images/svc-blowdry.jpg" },
+  { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Hair", rating: 5.0, reviews: 15, discount: "15% off", image: "images/svc-color.jpg" },
+  { name: "Bridal / Soft Glam", desc: "Hair + soft glam finish", duration: "2–3 hrs", price: "UGX 380,000", category: "Glam", rating: 5.0, reviews: 11, discount: "10% off", image: "images/svc-bridal.jpg" },
+  { name: "Deep Conditioning", desc: "Treatment mask & steam", duration: "40 min", price: "UGX 95,000", category: "Hair", rating: 4.8, reviews: 7, discount: "10% off", image: "images/svc-conditioning.jpg" },
 ];
 
 const HERO_VIDEOS = [
@@ -51,9 +53,9 @@ const HERO_VIDEOS = [
 ];
 
 const MOTION_CLIPS = [
-  { title: "Braids & hair", tag: "Hair", filter: "Cuts", src: "videos/african-braid-weave.mp4", poster: "images/client-linda.jpg" },
+  { title: "Braids & hair", tag: "Hair", filter: "Hair", src: "videos/african-braid-weave.mp4", poster: "images/client-linda.jpg" },
   { title: "Lash glam", tag: "Lashes", filter: "Lashes", src: "videos/hero-african-lashes.mp4", poster: "images/svc-lashes.jpg" },
-  { title: "Kampala beauty", tag: "Glam", filter: "Styling", src: "videos/african-model-shoot.mp4", poster: "images/client-grace.jpg" },
+  { title: "Nails & soft glam", tag: "Nails", filter: "Nails", src: "videos/african-model-shoot.mp4", poster: "images/svc-nails.jpg" },
 ];
 
 const DEFAULT_STYLISTS = [
@@ -67,9 +69,9 @@ const DEFAULT_STYLISTS = [
     ],
   },
   {
-    name: "Maximillian Neal",
-    avatar: "images/stylist-max.jpg",
-    tags: ["Men's Haircut", "Beard Trim"],
+    name: "Amina Nakato",
+    avatar: "images/client-amina.jpg",
+    tags: ["Gel Manicure", "Luxury Pedicure"],
     slots: [
       { t: "8:00", state: "" }, { t: "9:00", state: "" }, { t: "10:00", state: "booked" }, { t: "11:00", state: "booked" },
       { t: "12:00", state: "" }, { t: "13:00", state: "" }, { t: "14:00", state: "" }, { t: "15:00", state: "" },
@@ -78,7 +80,7 @@ const DEFAULT_STYLISTS = [
   {
     name: "Angelina Haynes",
     avatar: "images/stylist-angelina.jpg",
-    tags: ["Hair Coloring", "Lash Extensions"],
+    tags: ["Lash Extensions", "Acrylic / Soft Gel Set"],
     slots: [
       { t: "9:00", state: "" }, { t: "10:00", state: "" }, { t: "11:00", state: "booked" }, { t: "12:00", state: "" },
       { t: "13:00", state: "" }, { t: "14:00", state: "booked" }, { t: "15:00", state: "" }, { t: "16:00", state: "" },
@@ -87,7 +89,7 @@ const DEFAULT_STYLISTS = [
   {
     name: "Jessie Rae",
     avatar: "images/stylist-jessie.jpg",
-    tags: ["Hair Styling", "Bridal / Soft Glam"],
+    tags: ["Braids & Twists", "Bridal / Soft Glam"],
     slots: [
       { t: "8:00", state: "booked" }, { t: "9:00", state: "booked" }, { t: "11:00", state: "" }, { t: "12:00", state: "" },
       { t: "13:00", state: "" }, { t: "14:00", state: "booked" }, { t: "16:00", state: "" }, { t: "17:00", state: "" },
@@ -97,10 +99,9 @@ const DEFAULT_STYLISTS = [
 
 const CATEGORIES = [
   { name: "Lash Studio", image: "images/cat-lashes.jpg", filter: "Lashes" },
-  { name: "Ladies Hair", image: "images/cat-traditional.jpg", filter: "Cuts" },
-  { name: "Spa Salon", image: "images/cat-spa.jpg", filter: "Care" },
-  { name: "Luxury Color", image: "images/cat-luxury.jpg", filter: "Color" },
-  { name: "Soft Glam", image: "images/svc-bridal.jpg", filter: "Styling" },
+  { name: "Nails Lounge", image: "images/cat-nails.jpg", filter: "Nails" },
+  { name: "Ladies Hair", image: "images/cat-traditional.jpg", filter: "Hair" },
+  { name: "Soft Glam", image: "images/svc-bridal.jpg", filter: "Glam" },
 ];
 
 let store = {
@@ -109,7 +110,7 @@ let store = {
   services: [],
   stylistsPage1: [],
   stylistsPage2: [],
-  settingsState: { salonName: "Hair. Kampala", address: "Kampala", onlineBooking: true },
+  settingsState: { salonName: "Ladies. Kampala", address: "Kampala", onlineBooking: true },
   nextApptId: 100,
   invoiceSeq: 2042,
 };
@@ -139,6 +140,9 @@ function ensureDefaultServices() {
     return true;
   }
   let changed = false;
+  const before = store.services.length;
+  store.services = store.services.filter((s) => !MEN_ONLY_SERVICES.has(s.name) && s.category !== "Grooming");
+  if (store.services.length !== before) changed = true;
   mapped.forEach((svc) => {
     if (!store.services.some((s) => s.name === svc.name)) {
       store.services.unshift(svc);

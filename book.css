@@ -79,12 +79,16 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding: 22px clamp(20px, 5vw, 64px);
-  position: sticky;
+  padding: 18px clamp(20px, 5vw, 64px);
+  position: fixed;
   top: 0;
-  z-index: 40;
-  background: rgba(230, 223, 214, 0.92);
-  backdrop-filter: blur(10px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: rgba(8, 8, 8, 0.82);
+  backdrop-filter: blur(14px);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .brand {
@@ -93,14 +97,15 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   gap: 10px;
   font-weight: 800;
   letter-spacing: -0.03em;
+  color: #fff;
 }
 
 .brand-mark {
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: var(--ink);
-  color: #fff;
+  background: #fff;
+  color: #111;
   display: grid;
   place-items: center;
   font-size: 1rem;
@@ -114,11 +119,11 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   gap: 28px;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .nav-links a:hover,
-.nav-links a.active { color: #c45c4a; }
+.nav-links a.active { color: #f0c3a0; }
 
 .header-actions {
   display: flex;
@@ -127,8 +132,8 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 }
 
 .btn-signup {
-  background: var(--ink);
-  color: #fff;
+  background: #fff;
+  color: #111;
   padding: 12px 22px;
   border-radius: 999px;
   font-weight: 700;
@@ -139,7 +144,13 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
 .btn-signup:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.book-cta .btn-signup,
+.footer-cta {
+  background: #fff;
+  color: #111;
 }
 
 .btn-pulse {
@@ -157,7 +168,8 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   height: 42px;
   border: none;
   border-radius: 12px;
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
   cursor: pointer;
 }
 
@@ -171,8 +183,10 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  min-height: min(92vh, 900px);
-  height: min(92vh, 900px);
+  min-height: 100vh;
+  height: 100vh;
+  min-height: 100dvh;
+  height: 100dvh;
   display: grid;
   place-items: end center;
   padding: 0;
@@ -1201,12 +1215,14 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
     left: 16px;
     right: 16px;
     flex-direction: column;
-    background: #fff;
+    background: #141414;
+    color: rgba(255, 255, 255, 0.85);
     padding: 16px;
     border-radius: 16px;
     box-shadow: var(--shadow);
     align-items: flex-start;
     gap: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   .nav-links.open { display: flex; }
   .nav-toggle { display: grid; place-items: center; }
