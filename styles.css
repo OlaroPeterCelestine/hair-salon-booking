@@ -679,10 +679,38 @@
       display: inline-block;
     }
     .status.in-progress { background: var(--orange); color: #fff; }
-    .status.arrived,
+    .status.arrived { background: #3a6ea5; color: #fff; }
     .status.confirmed { background: #2a2a2a; color: #fff; }
-    .status.complete { background: #3d8a52; color: #fff; }
+    .status.complete { background: #3d8a52; color: #fff; animation: payPulse 1.4s ease infinite; }
     .status.past { background: var(--grey-pill); color: var(--text-soft); cursor: default; }
+
+    @keyframes payPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(61, 138, 82, 0.35); }
+      50% { box-shadow: 0 0 0 6px rgba(61, 138, 82, 0); }
+    }
+
+    .flow-legend {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin: 0 0 14px;
+      line-height: 1.4;
+    }
+
+    .flow-legend strong { color: var(--text-soft); font-weight: 700; }
+
+    .schedule-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pay-flow-note {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #3d8a52;
+    }
     .status:hover:not(.past) { filter: brightness(1.08); }
 
     /* ——— Right column ——— */

@@ -270,6 +270,9 @@ function loadStore() {
     if (typeof data.invoiceSeq === "number") invoiceSeq = data.invoiceSeq;
     if (typeof data.nextApptId === "number") nextApptId = data.nextApptId;
     ensureStaffShifts();
+    appointments.forEach((a) => {
+      if (STATUS_LABELS[a.status]) a.statusLabel = STATUS_LABELS[a.status];
+    });
   } catch (err) {
     console.warn("Could not load localStorage", err);
   }
@@ -700,17 +703,58 @@ function bindTableSearch(ns, rerender) {
 const STATUS_FLOW = {
   confirmed: { next: "arrived", label: "Arrived" },
   arrived: { next: "in-progress", label: "In Progress" },
-  "in-progress": { next: "complete", label: "Complete" },
-  complete: { next: "pay", label: "Pay" },
+  "in-progress": { next: "complete", label: "Completed" },
+  complete: { next: "pay", label: "Pay now" },
 };
 
 const STATUS_LABELS = {
-  confirmed: "Confirmed",
+  confirmed: "Booked",
   arrived: "Arrived",
   "in-progress": "In Progress",
-  complete: "Complete",
-  past: "Past",
+  complete: "Pay now",
+  past: "Paid",
 };
+
+const STATUS_HINT = {
+  confirmed: "Mark arrived",
+  arrived: "Start service",
+  "in-progress": "Mark completed & collect payment",
+  complete: "Collect payment",
+  past: "Payment done",
+};
+
+function statusButtonLabel(appt) {
+  return STATUS_LABELS[appt.status] || appt.statusLabel || appt.status;
+}
+
+function ensurePendingPayment(appt) {
+  let payment = payments.find((p) => p.apptId === appt.id && p.status === "pending");
+  if (payment) return payment;
+  payment = payments.find((p) =>
+    !p.apptId &&
+    p.client === appt.client &&
+    p.service === appt.service &&
+    p.status === "pending"
+  );
+  if (payment) {
+    payment.apptId = appt.id;
+    return payment;
+  }
+  payment = {
+    id: `INV-${invoiceSeq++}`,
+    apptId: appt.id,
+    client: appt.client,
+    avatar: appt.avatar,
+    service: appt.service,
+    amount: appt.price,
+    method: "—",
+    date: weekDays[appt.day]?.label || "Today",
+    status: "pending",
+    statusLabel: "Pending",
+  };
+  payments.unshift(payment);
+  return payment;
+}
 
 function toast(msg) {
   const el = document.getElementById("toast");
@@ -755,11 +799,11 @@ function renderAppointments(list) {
     filtersEl.innerHTML = `
       ${filterSelect("status", ui.status, [
         { value: "all", label: "All status" },
-        { value: "confirmed", label: "Confirmed" },
+        { value: "confirmed", label: "Booked" },
         { value: "arrived", label: "Arrived" },
         { value: "in-progress", label: "In Progress" },
-        { value: "complete", label: "Complete" },
-        { value: "past", label: "Past" },
+        { value: "complete", label: "Completed / Pay" },
+        { value: "past", label: "Paid" },
       ], "Status")}
       ${filterSelect("master", ui.master, [{ value: "all", label: "All masters" }, ...masters.map((m) => ({ value: m, label: m }))], "Master")}
       ${filterSelect("service", ui.service, [{ value: "all", label: "All services" }, ...servicesList.map((s) => ({ value: s, label: s }))], "Service")}
@@ -797,7 +841,7 @@ function renderAppointments(list) {
         <div class="meta-block price"><div class="label">Price</div><div class="value">${a.price}</div></div>
       </div>
       <div class="appt-status-wrap">
-        <button type="button" class="status ${a.status}" data-status-id="${a.id}" title="${a.status === "past" ? "Done" : "Click to advance status"}">${a.statusLabel}</button>
+        <button type="button" class="status ${a.status}" data-status-id="${a.id}" title="${STATUS_HINT[a.status] || ""}">${statusButtonLabel(a)}</button>
       </div>
     </article>
   `).join("") + paginationBar(meta, "dashboard");
@@ -825,20 +869,26 @@ function advanceStatus(apptId) {
   if (!appt || appt.status === "past") return;
 
   if (appt.status === "complete") {
-    openPaymentModal(appt);
+    const payment = ensurePendingPayment(appt);
+    saveStore();
+    openPaymentModal({ ...appt, _existingPayment: payment });
     return;
   }
 
   const step = STATUS_FLOW[appt.status];
   if (!step) return;
 
+  // Booked → Arrived → In Progress → Completed (+ payment immediately)
   if (step.next === "complete") {
     appt.status = "complete";
-    appt.statusLabel = "Complete";
+    appt.statusLabel = STATUS_LABELS.complete;
+    const payment = ensurePendingPayment(appt);
     saveStore();
     refreshDashboardAppts();
-    toast(`${appt.client} marked Complete — collect payment`);
-    openPaymentModal(appt);
+    if (currentPage === "schedule") renderSchedule();
+    if (currentPage === "payments") renderPayments();
+    toast(`${appt.client} completed — collect payment`);
+    openPaymentModal({ ...appt, _existingPayment: payment });
     return;
   }
 
@@ -846,6 +896,7 @@ function advanceStatus(apptId) {
   appt.statusLabel = STATUS_LABELS[step.next];
   saveStore();
   refreshDashboardAppts();
+  if (currentPage === "schedule") renderSchedule();
   toast(`${appt.client} → ${appt.statusLabel}`);
 }
 
@@ -856,6 +907,7 @@ function openPaymentModal(appt) {
     <strong>${appt.client}</strong>
     <span>${appt.service} · ${appt.master} · ${appt.time}</span>
     <div class="pay-amount">${appt.price}</div>
+    <p class="pay-flow-note">Status: Completed — payment due now</p>
   `;
   document.querySelectorAll(".pay-method").forEach((b) => {
     b.classList.toggle("active", b.dataset.method === selectedPayMethod);
@@ -886,44 +938,31 @@ function printReceipt(payment, appt) {
 
 function completePayment() {
   if (!pendingPayAppt) return;
-  const appt = pendingPayAppt;
+  const apptRef = pendingPayAppt;
+  const liveAppt = appointments.find((a) => a.id === apptRef.id) || apptRef;
   let payment;
-  if (appt._existingPayment) {
-    payment = appt._existingPayment;
+  if (apptRef._existingPayment) {
+    payment = apptRef._existingPayment;
     payment.status = "paid";
     payment.statusLabel = "Paid";
     payment.method = selectedPayMethod;
-    const linked = appointments.find((a) => a.client === payment.client && a.service === payment.service && a.status === "complete");
-    if (linked) {
-      linked.status = "past";
-      linked.statusLabel = "Past";
-    }
   } else {
-    payment = {
-      id: `INV-${invoiceSeq++}`,
-      client: appt.client,
-      avatar: appt.avatar,
-      service: appt.service,
-      amount: appt.price,
-      method: selectedPayMethod,
-      date: "22 Jan 2026",
-      status: "paid",
-      statusLabel: "Paid",
-    };
-    payments.unshift(payment);
-    if (appt.status !== undefined) {
-      appt.status = "past";
-      appt.statusLabel = "Past";
-    }
+    payment = ensurePendingPayment(liveAppt);
+    payment.status = "paid";
+    payment.statusLabel = "Paid";
+    payment.method = selectedPayMethod;
   }
+  liveAppt.status = "past";
+  liveAppt.statusLabel = STATUS_LABELS.past;
   closeModal("paymentModal");
   pendingPayAppt = null;
   saveStore();
   refreshDashboardAppts();
   if (currentPage === "payments") renderPayments();
   if (currentPage === "schedule") renderSchedule();
+  if (currentPage === "dashboard") renderAppointments();
   toast(`Paid ${payment.amount} · printing receipt`);
-  setTimeout(() => printReceipt(payment, appt), 250);
+  setTimeout(() => printReceipt(payment, liveAppt), 250);
 }
 
 function renderAvailability() {
@@ -1041,16 +1080,17 @@ function renderSchedule() {
         <div class="table-filters">
           ${filterSelect("status", ui.status, [
             { value: "all", label: "All status" },
-            { value: "confirmed", label: "Confirmed" },
+            { value: "confirmed", label: "Booked" },
             { value: "arrived", label: "Arrived" },
             { value: "in-progress", label: "In Progress" },
-            { value: "complete", label: "Complete" },
-            { value: "past", label: "Past" },
+            { value: "complete", label: "Completed / Pay" },
+            { value: "past", label: "Paid" },
           ], "Status")}
           ${filterSelect("master", ui.master, [{ value: "all", label: "All masters" }, ...masters.map((m) => ({ value: m, label: m }))], "Master")}
         </div>
         <input class="table-search" type="search" placeholder="Filter schedule..." value="${ui.q}" data-table-q="schedule" />
       </div>
+      <p class="flow-legend">Flow: <strong>Booked</strong> → <strong>Arrived</strong> → <strong>In Progress</strong> → <strong>Completed</strong> → <strong>Payment</strong></p>
       <div class="schedule-list">
         ${meta.slice.length ? meta.slice.map((a) => `
           <div class="schedule-block">
@@ -1063,9 +1103,9 @@ function renderSchedule() {
                   <span>${a.service} · ${a.master}</span>
                 </div>
               </div>
-              <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div class="schedule-actions">
                 <strong>${a.price}</strong>
-                <button type="button" class="status ${a.status}" data-status-id="${a.id}">${a.statusLabel}</button>
+                <button type="button" class="status ${a.status}" data-status-id="${a.id}" title="${STATUS_HINT[a.status] || ""}">${statusButtonLabel(a)}</button>
               </div>
             </div>
           </div>
@@ -1093,10 +1133,7 @@ function renderSchedule() {
   bindPagination("schedule", renderSchedule);
   el.querySelector("#addApptBtn")?.addEventListener("click", () => openApptModal());
   el.querySelectorAll("[data-status-id]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      advanceStatus(btn.dataset.statusId);
-      renderSchedule();
-    });
+    btn.addEventListener("click", () => advanceStatus(btn.dataset.statusId));
   });
 }
 
@@ -1938,6 +1975,12 @@ function handleSearch(q) {
 loadStore();
 let storeDirty = ensureStaffShifts();
 if (syncClientsFromBookings()) storeDirty = true;
+appointments.forEach((a) => {
+  if (STATUS_LABELS[a.status] && a.statusLabel !== STATUS_LABELS[a.status]) {
+    a.statusLabel = STATUS_LABELS[a.status];
+    storeDirty = true;
+  }
+});
 if (storeDirty) saveStore();
 hydrateIcons();
 renderAppointments();
@@ -2065,7 +2108,7 @@ document.getElementById("apptForm")?.addEventListener("submit", (e) => {
     master: stylistName,
     price,
     status: "confirmed",
-    statusLabel: "Confirmed",
+    statusLabel: STATUS_LABELS.confirmed,
     day: scheduleDay,
   });
 
