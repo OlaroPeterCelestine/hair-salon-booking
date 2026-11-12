@@ -30,6 +30,7 @@ const DEFAULT_SERVICES = [
   { name: "Lash Extensions", desc: "Classic or hybrid extensions", duration: "90–120 min", price: "UGX 220,000", category: "Lashes", rating: 5.0, reviews: 21, discount: "10% off", image: "images/svc-lashes.jpg" },
   { name: "Lash Lift & Tint", desc: "Lift, curl, and tint natural lashes", duration: "60 min", price: "UGX 140,000", category: "Lashes", rating: 4.9, reviews: 16, discount: null, image: "images/svc-lash-lift.jpg" },
   { name: "Women's Haircut", desc: "Consultation, wash, cut & style", duration: "45–60 min", price: "UGX 150,000", category: "Cuts", rating: 5.0, reviews: 12, discount: "10% off", image: "images/svc-womens-cut.jpg" },
+  { name: "Braids & Twists", desc: "Knotless, goddess, or classic braids", duration: "3–6 hrs", price: "UGX 280,000", category: "Styling", rating: 5.0, reviews: 24, discount: "10% off", image: "images/cat-traditional.jpg" },
   { name: "Hair Styling", desc: "Event or everyday styling", duration: "60–90 min", price: "UGX 185,000", category: "Styling", rating: 5.0, reviews: 8, discount: "10% off", image: "images/svc-styling.jpg" },
   { name: "Blow-dry", desc: "Wash and professional blow-dry", duration: "45 min", price: "UGX 165,000", category: "Styling", rating: 4.8, reviews: 10, discount: null, image: "images/svc-blowdry.jpg" },
   { name: "Hair Coloring", desc: "Full color or root touch-up", duration: "90–120 min", price: "UGX 260,000", category: "Color", rating: 5.0, reviews: 15, discount: "15% off", image: "images/svc-color.jpg" },
@@ -41,17 +42,18 @@ const DEFAULT_SERVICES = [
 ];
 
 const HERO_VIDEOS = [
-  { src: "https://assets.mixkit.co/videos/16073/16073-720.mp4", poster: "images/cat-luxury.jpg" },
-  { src: "https://assets.mixkit.co/videos/52059/52059-720.mp4", poster: "images/cat-lashes.jpg" },
-  { src: "https://assets.mixkit.co/videos/16044/16044-720.mp4", poster: "images/svc-styling.jpg" },
-  { src: "https://assets.mixkit.co/videos/4718/4718-720.mp4", poster: "images/svc-lashes.jpg" },
-  { src: "https://assets.mixkit.co/videos/40598/40598-720.mp4", poster: "images/svc-bridal.jpg" },
+  { src: "videos/hero-african-lashes.mp4", poster: "images/client-amina.jpg" },
+  { src: "videos/hero-african-hair.mp4", poster: "images/client-grace.jpg" },
+  { src: "videos/african-braid-weave.mp4", poster: "images/client-linda.jpg" },
+  { src: "videos/african-creating-braids.mp4", poster: "images/cat-traditional.jpg" },
+  { src: "videos/african-confident.mp4", poster: "images/client-amina.jpg" },
+  { src: "videos/african-model-shoot.mp4", poster: "images/client-grace.jpg" },
 ];
 
 const MOTION_CLIPS = [
-  { title: "Ladies hair", tag: "Styling", filter: "Styling", src: "https://assets.mixkit.co/videos/16044/16044-720.mp4", poster: "images/svc-styling.jpg" },
-  { title: "Lash glam", tag: "Lashes", filter: "Lashes", src: "https://assets.mixkit.co/videos/52052/52052-720.mp4", poster: "images/svc-lashes.jpg" },
-  { title: "Soft makeup", tag: "Beauty", filter: "Lashes", src: "https://assets.mixkit.co/videos/40540/40540-720.mp4", poster: "images/svc-lash-lift.jpg" },
+  { title: "Braids & hair", tag: "Hair", filter: "Cuts", src: "videos/african-braid-weave.mp4", poster: "images/client-linda.jpg" },
+  { title: "Lash glam", tag: "Lashes", filter: "Lashes", src: "videos/hero-african-lashes.mp4", poster: "images/svc-lashes.jpg" },
+  { title: "Kampala beauty", tag: "Glam", filter: "Styling", src: "videos/african-model-shoot.mp4", poster: "images/client-grace.jpg" },
 ];
 
 const DEFAULT_STYLISTS = [
@@ -279,9 +281,15 @@ function initHeroVideos() {
   let showingA = true;
 
   const playCurrent = (el, item) => {
+    el.muted = true;
+    el.playsInline = true;
+    el.setAttribute("playsinline", "");
+    el.loop = true;
     el.poster = item.poster;
-    el.src = item.src;
-    el.load();
+    if (el.getAttribute("src") !== item.src) {
+      el.src = item.src;
+      el.load();
+    }
     return el.play().catch(() => {});
   };
 
@@ -292,14 +300,14 @@ function initHeroVideos() {
     const next = HERO_VIDEOS[idx];
     const incoming = showingA ? b : a;
     const outgoing = showingA ? a : b;
-    playCurrent(incoming, next).then(() => {
+    playCurrent(incoming, next).finally(() => {
       incoming.classList.add("is-active");
       outgoing.classList.remove("is-active");
       showingA = !showingA;
     });
   };
 
-  setInterval(swap, 7000);
+  setInterval(swap, 6500);
 }
 
 function renderServiceFilter() {
