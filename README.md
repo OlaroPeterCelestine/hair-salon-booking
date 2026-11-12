@@ -4,13 +4,14 @@ HTML/CSS/JS desk app for salon appointments, clients, payments, and team — pri
 
 ## Run locally
 
-Open `index.html` in a browser, or serve the folder:
-
 ```bash
 python3 -m http.server 8765
 ```
 
-Then visit http://127.0.0.1:8765/
+- **Client booking:** http://127.0.0.1:8765/book.html  
+- **Salon desk:** http://127.0.0.1:8765/ (PIN `2468`)
+
+Bookings from the client site write into the same **localStorage** store the desk uses (`hair_salon_data`), so new appointments show as **Booked** on the schedule.
 
 ## Login
 

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appoint Hub — Book Hair. Kampala</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="book.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="book.html">
+      <span class="brand-mark">A</span>
+      <span class="brand-name">Appoint Hub</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="book.html" class="active">For Clients</a>
+      <a href="index.html">For Businesses</a>
+      <a href="#offerings">Search</a>
+      <a href="index.html">Login</a>
+    </nav>
+    <div class="header-actions">
+      <a class="btn-signup" href="#book">Sign Up</a>
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>At Last, This is What<br />You've Been Searching For</h1>
+      <form class="search-bar" id="searchForm">
+        <label class="search-field">
+          <span>Category</span>
+          <select id="filterCategory">
+            <option value="all">All categories</option>
+            <option value="Cuts">Cuts</option>
+            <option value="Styling">Styling</option>
+            <option value="Color">Color</option>
+            <option value="Grooming">Grooming</option>
+            <option value="Care">Care</option>
+          </select>
+        </label>
+        <label class="search-field">
+          <span>Salon</span>
+          <select id="filterSalon">
+            <option value="Hair. Kampala">Hair. Kampala</option>
+          </select>
+        </label>
+        <label class="search-field">
+          <span>Service</span>
+          <select id="filterService">
+            <option value="all">All services</option>
+          </select>
+        </label>
+        <button type="submit" class="search-submit" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+      </form>
+    </section>
+
+    <section class="categories" id="categories">
+      <div class="section-head">
+        <h2>Our categories</h2>
+        <p>Book beauty and spa services at Hair. Kampala — cuts, color, styling, and grooming.</p>
+      </div>
+      <div class="cat-track" id="catTrack"></div>
+      <div class="cat-pager">
+        <button type="button" id="catPrev" aria-label="Previous">‹</button>
+        <span id="catPage">1/4</span>
+        <button type="button" id="catNext" aria-label="Next">›</button>
+      </div>
+    </section>
+
+    <section class="offerings" id="offerings">
+      <div class="offerings-inner">
+        <div class="section-head light">
+          <h2>Top rated offerings</h2>
+          <p>Pick a service to book — it lands on the salon desk as <strong>Booked</strong>.</p>
+        </div>
+        <div class="offer-grid" id="offerGrid"></div>
+        <div class="view-all-wrap">
+          <button type="button" class="btn-view-all" id="viewAllBtn">View all</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <strong>Appoint Hub</strong> · Client booking for <span id="footerSalon">Hair. Kampala</span>
+    </div>
+    <a href="index.html">Salon desk login →</a>
+  </footer>
+
+  <!-- Booking modal -->
+  <div class="modal" id="bookModal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-labelledby="bookTitle">
+      <div class="modal-head">
+        <div>
+          <h2 id="bookTitle">Book service</h2>
+          <p class="modal-sub" id="bookSub">Hair. Kampala</p>
+        </div>
+        <button type="button" class="modal-x" data-close aria-label="Close">×</button>
+      </div>
+      <form id="bookForm" class="modal-body">
+        <div class="form-grid">
+          <label class="field"><span>Your name</span><input name="name" id="bookName" required placeholder="e.g. Joan Nakato" /></label>
+          <label class="field"><span>Phone</span><input name="phone" id="bookPhone" required placeholder="+256 7XX XXX XXX" /></label>
+          <label class="field field-full"><span>Email</span><input name="email" id="bookEmail" type="email" required placeholder="you@email.com" /></label>
+        </div>
+        <p class="field-label">Stylist</p>
+        <div class="stylist-list" id="bookStylists"></div>
+        <p class="field-label">Open slots</p>
+        <div class="slot-list" id="bookSlots"></div>
+        <input type="hidden" id="bookService" />
+        <input type="hidden" id="bookStylist" />
+        <input type="hidden" id="bookSlot" />
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close>Cancel</button>
+          <button type="submit" class="btn-dark" id="bookSubmit" disabled>Confirm booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="book.js"></script>
+</body>
+</html>
