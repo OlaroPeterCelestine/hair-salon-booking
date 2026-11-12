@@ -420,14 +420,75 @@ function markSlotBooked(stylistName, time) {
   });
 }
 
+function fillApptClientFields(client) {
+  document.getElementById("apptClientName").value = client?.name || "";
+  document.getElementById("apptClientPhone").value = client?.phone || "";
+  document.getElementById("apptClientEmail").value = client?.email || "";
+}
+
+function upsertClientFromBooking({ name, phone, email, avatar, price, visitDate }) {
+  let client = clients.find((c) => c.name.toLowerCase() === name.toLowerCase() || (phone && c.phone === phone));
+  const priceNum = Number(String(price || "0").replace(/[^\d]/g, "")) || 0;
+  if (client) {
+    client.phone = phone || client.phone;
+    client.email = email || client.email;
+    if (avatar) client.avatar = avatar;
+    client.visits = (client.visits || 0) + 1;
+    client.last = visitDate || client.last;
+    const prev = Number(String(client.spent || "0").replace(/[^\d]/g, "")) || 0;
+    client.spent = fmtUgx(prev + priceNum);
+    return client;
+  }
+  client = {
+    name,
+    avatar: avatar || `https://i.pravatar.cc/88?u=${encodeURIComponent(name)}`,
+    phone: phone || "",
+    email: email || "",
+    visits: 1,
+    last: visitDate || "—",
+    spent: fmtUgx(priceNum),
+    source: "booking",
+  };
+  clients.unshift(client);
+  return client;
+}
+
+function syncClientsFromBookings() {
+  let added = 0;
+  appointments.forEach((a) => {
+    const exists = clients.some((c) => c.name === a.client);
+    if (exists) return;
+    clients.unshift({
+      name: a.client,
+      avatar: a.avatar || `https://i.pravatar.cc/88?u=${encodeURIComponent(a.client)}`,
+      phone: "",
+      email: "",
+      visits: appointments.filter((x) => x.client === a.client).length,
+      last: weekDays[a.day]?.label || "—",
+      spent: a.price || "UGX 0",
+      source: "booking",
+    });
+    added += 1;
+  });
+  return added > 0;
+}
+
 function openApptModal(preset = {}) {
-  const clientSel = document.getElementById("apptClient");
+  const existingSel = document.getElementById("apptExistingClient");
   const serviceSel = document.getElementById("apptService");
-  clientSel.innerHTML = clients.map((c) => `<option value="${c.name}">${c.name}</option>`).join("");
+  existingSel.innerHTML = `<option value="">New client from this booking</option>` +
+    clients.map((c) => `<option value="${c.name}">${c.name}</option>`).join("");
   serviceSel.innerHTML = services.map((s) => `<option value="${s.name}" data-price="${s.price}">${s.name} — ${s.price}</option>`).join("");
 
-  if (preset.client) clientSel.value = preset.client;
   if (preset.service) serviceSel.value = preset.service;
+
+  if (preset.client) {
+    existingSel.value = preset.client;
+    fillApptClientFields(clients.find((c) => c.name === preset.client));
+  } else {
+    existingSel.value = "";
+    fillApptClientFields(null);
+  }
 
   const stylists = getAllStylists();
   const preferred = preset.stylist
@@ -446,10 +507,11 @@ function openApptModal(preset = {}) {
     document.getElementById("apptSubmitBtn").disabled = !apptSelectedSlot;
   }
   openModal("apptModal");
+  document.getElementById("apptClientName")?.focus();
 }
 
 function fmtUgx(n) {
-  return "UGX " + Number(n).toLocaleString("en-UG");
+  return "UGX " + Number(n || 0).toLocaleString("en-UG");
 }
 
 function renderApptStylists() {
@@ -1178,17 +1240,23 @@ function renderClients() {
   const meta = paginate(filtered, ui.page, ui.size);
   ui.page = meta.page;
 
+  const fromBooking = clients.filter((c) => c.source === "booking" || appointments.some((a) => a.client === c.name)).length;
+  const topClient = [...clients].sort((a, b) => b.visits - a.visits)[0];
+
   document.getElementById("page-clients").innerHTML = `
     <div class="stats">
-      <div class="stat-card"><div class="stat-label">Total clients</div><div class="stat-value">${clients.length}</div><div class="stat-sub">Active profiles</div></div>
-      <div class="stat-card"><div class="stat-label">Visits (all)</div><div class="stat-value">${clients.reduce((s, c) => s + c.visits, 0)}</div><div class="stat-sub">Lifetime lifetime</div></div>
-      <div class="stat-card"><div class="stat-label">Top client</div><div class="stat-value" style="font-size:1.05rem;">${[...clients].sort((a, b) => b.visits - a.visits)[0].name}</div><div class="stat-sub">Most visits</div></div>
-      <div class="stat-card"><div class="stat-label">New this month</div><div class="stat-value">3</div><div class="stat-sub">Kampala area</div></div>
+      <div class="stat-card"><div class="stat-label">Total clients</div><div class="stat-value">${clients.length}</div><div class="stat-sub">From bookings</div></div>
+      <div class="stat-card"><div class="stat-label">Visits (all)</div><div class="stat-value">${clients.reduce((s, c) => s + c.visits, 0)}</div><div class="stat-sub">Booked visits</div></div>
+      <div class="stat-card"><div class="stat-label">Top client</div><div class="stat-value" style="font-size:1.05rem;">${topClient?.name || "—"}</div><div class="stat-sub">Most visits</div></div>
+      <div class="stat-card"><div class="stat-label">With bookings</div><div class="stat-value">${fromBooking}</div><div class="stat-sub">Linked to appointments</div></div>
     </div>
     <section class="panel">
       <div class="panel-head">
-        <span class="panel-title">Client directory</span>
-        <button type="button" class="btn-primary" id="addClientBtn">+ Add client</button>
+        <div>
+          <span class="panel-title">Client directory</span>
+          <span class="panel-date">Clients are created when you book</span>
+        </div>
+        <button type="button" class="btn-primary" id="addClientBtn">+ New booking</button>
       </div>
       <div class="toolbar table-toolbar">
         <div class="table-filters">
@@ -1237,10 +1305,7 @@ function renderClients() {
   bindTableSearch("clients", renderClients);
   bindPagination("clients", renderClients);
 
-  document.getElementById("addClientBtn")?.addEventListener("click", () => {
-    document.getElementById("clientForm").reset();
-    openModal("clientModal");
-  });
+  document.getElementById("addClientBtn")?.addEventListener("click", () => openApptModal());
   document.querySelectorAll(".book-client").forEach((btn) => {
     btn.addEventListener("click", () => openApptModal({ client: btn.dataset.name }));
   });
@@ -1871,7 +1936,9 @@ function handleSearch(q) {
 
 /* ——— Init ——— */
 loadStore();
-if (ensureStaffShifts()) saveStore();
+let storeDirty = ensureStaffShifts();
+if (syncClientsFromBookings()) storeDirty = true;
+if (storeDirty) saveStore();
 hydrateIcons();
 renderAppointments();
 renderAvailability();
@@ -1953,31 +2020,50 @@ document.getElementById("payMethods")?.addEventListener("click", (e) => {
 
 document.getElementById("confirmPayBtn")?.addEventListener("click", completePayment);
 
-/* Add employee */
+document.getElementById("apptExistingClient")?.addEventListener("change", (e) => {
+  const name = e.target.value;
+  if (!name) {
+    fillApptClientFields(null);
+    document.getElementById("apptClientName")?.focus();
+    return;
+  }
+  fillApptClientFields(clients.find((c) => c.name === name));
+});
+
 document.getElementById("apptForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
-  const clientName = document.getElementById("apptClient").value;
+  const clientName = document.getElementById("apptClientName").value.trim();
+  const clientPhone = document.getElementById("apptClientPhone").value.trim();
+  const clientEmail = document.getElementById("apptClientEmail").value.trim();
   const serviceName = document.getElementById("apptService").value;
   const stylistName = document.getElementById("apptStylistValue").value;
   const slotTime = document.getElementById("apptSlotValue").value;
-  if (!clientName || !serviceName || !stylistName || !slotTime) {
-    toast("Pick client, service, stylist, and an open slot");
+  if (!clientName || !clientPhone || !clientEmail || !serviceName || !stylistName || !slotTime) {
+    toast("Add client details, service, stylist, and an open slot");
     return;
   }
 
-  const client = clients.find((c) => c.name === clientName);
   const service = services.find((s) => s.name === serviceName);
+  const price = service?.price || "UGX 150,000";
+  const visitDate = weekDays[scheduleDay]?.label || "Today";
+  const client = upsertClientFromBooking({
+    name: clientName,
+    phone: clientPhone,
+    email: clientEmail,
+    price,
+    visitDate,
+  });
   const endHour = Number(slotTime.split(":")[0]) + 1;
   const end = `${String(endHour).padStart(2, "0")}:00`;
 
   appointments.unshift({
     id: nextApptId++,
     time: `${slotTime} – ${end}`,
-    client: clientName,
-    avatar: client?.avatar || `https://i.pravatar.cc/88?u=${encodeURIComponent(clientName)}`,
+    client: client.name,
+    avatar: client.avatar,
     service: serviceName,
     master: stylistName,
-    price: service?.price || "UGX 150,000",
+    price,
     status: "confirmed",
     statusLabel: "Confirmed",
     day: scheduleDay,
@@ -1986,10 +2072,11 @@ document.getElementById("apptForm")?.addEventListener("submit", (e) => {
   markSlotBooked(stylistName, slotTime);
   saveStore();
   closeModal("apptModal");
-  toast(`Booked ${slotTime} with ${stylistName}`);
+  toast(`Booked ${client.name} · ${slotTime} with ${stylistName}`);
   renderAvailability();
   if (currentPage === "schedule") renderSchedule();
   if (currentPage === "dashboard") renderAppointments();
+  if (currentPage === "clients") renderClients();
 });
 
 document.getElementById("employeeForm")?.addEventListener("submit", (e) => {
@@ -2033,21 +2120,9 @@ document.getElementById("shiftForm")?.addEventListener("submit", (e) => {
 
 document.getElementById("clientForm")?.addEventListener("submit", (e) => {
   e.preventDefault();
-  const fd = new FormData(e.target);
-  const name = String(fd.get("name")).trim();
-  clients.unshift({
-    name,
-    avatar: `https://i.pravatar.cc/88?u=${encodeURIComponent(name)}`,
-    phone: String(fd.get("phone")),
-    email: String(fd.get("email")),
-    visits: 0,
-    last: "—",
-    spent: "UGX 0",
-  });
-  saveStore();
   closeModal("clientModal");
-  toast(`${name} added as client`);
-  if (currentPage === "clients") renderClients();
+  openApptModal();
+  toast("Book an appointment to add a client");
 });
 
 document.getElementById("serviceForm")?.addEventListener("submit", (e) => {

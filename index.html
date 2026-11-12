@@ -392,11 +392,25 @@
       </div>
       <form id="apptForm" class="modal-body">
         <div class="form-grid">
-          <label class="field">
-            <span>Client</span>
-            <select name="client" id="apptClient" required></select>
+          <label class="field field-full">
+            <span>Existing client <em class="slot-hint">(optional)</em></span>
+            <select name="existingClient" id="apptExistingClient">
+              <option value="">New client from this booking</option>
+            </select>
           </label>
           <label class="field">
+            <span>Client name</span>
+            <input name="clientName" id="apptClientName" required placeholder="e.g. Joan Nakato" autocomplete="name" />
+          </label>
+          <label class="field">
+            <span>Phone</span>
+            <input name="clientPhone" id="apptClientPhone" required placeholder="+256 7XX XXX XXX" autocomplete="tel" />
+          </label>
+          <label class="field field-full">
+            <span>Email</span>
+            <input name="clientEmail" id="apptClientEmail" type="email" required placeholder="joan@email.com" autocomplete="email" />
+          </label>
+          <label class="field field-full">
             <span>Service</span>
             <select name="service" id="apptService" required></select>
           </label>
