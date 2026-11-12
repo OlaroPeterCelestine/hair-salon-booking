@@ -85,10 +85,10 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   left: 0;
   right: 0;
   z-index: 50;
-  background: rgba(8, 8, 8, 0.82);
-  backdrop-filter: blur(14px);
+  background: transparent;
+  backdrop-filter: none;
   color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
 }
 
 .brand {
@@ -119,7 +119,11 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; }
   gap: 28px;
   font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.72);
+  color: #fff;
+}
+
+.nav-links a {
+  color: #fff;
 }
 
 .nav-links a:hover,
