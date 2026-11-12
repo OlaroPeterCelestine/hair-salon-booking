@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="book.css" />
 </head>
 <body>
+  <div class="bg-orb bg-orb-a" aria-hidden="true"></div>
+  <div class="bg-orb bg-orb-b" aria-hidden="true"></div>
+
   <header class="site-header">
     <a class="brand" href="/">
       <span class="brand-mark">A</span>
@@ -21,16 +24,17 @@
       <a href="#book">Book</a>
     </nav>
     <div class="header-actions">
-      <a class="btn-signup" href="#offerings">Browse services</a>
+      <a class="btn-signup btn-pulse" href="#offerings">Browse services</a>
       <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <h1>At Last, This is What<br />You've Been Searching For</h1>
-      <p class="hero-lead">Pick a service, then choose an open time when you book.</p>
-      <form class="search-bar" id="searchForm">
+      <p class="hero-kicker hero-anim" style="--d:0s">Hair. Kampala · Appoint Hub</p>
+      <h1 class="hero-anim" style="--d:.08s">At Last, This is What<br />You've Been Searching For</h1>
+      <p class="hero-lead hero-anim" style="--d:.18s">Pick a service, then choose an open time when you book.</p>
+      <form class="search-bar hero-anim" id="searchForm" style="--d:.28s">
         <label class="search-field">
           <span>Category</span>
           <select id="filterCategory">
@@ -60,7 +64,7 @@
       </form>
     </section>
 
-    <section class="categories" id="categories">
+    <section class="categories reveal" id="categories">
       <div class="section-head">
         <h2>Our categories</h2>
         <p>Browse cuts, color, styling, and grooming — then book an open time.</p>
@@ -73,7 +77,7 @@
       </div>
     </section>
 
-    <section class="offerings" id="offerings">
+    <section class="offerings reveal" id="offerings">
       <div class="offerings-inner">
         <div class="section-head light">
           <h2>Top rated offerings</h2>
@@ -86,10 +90,10 @@
       </div>
     </section>
 
-    <section class="book-cta" id="book">
+    <section class="book-cta reveal" id="book">
       <h2>Ready to book?</h2>
       <p>Pick a service above, choose a free time, and confirm — your appointment is saved as <strong>Booked</strong>.</p>
-      <a class="btn-signup" href="#offerings">View services</a>
+      <a class="btn-signup btn-pulse" href="#offerings">View services</a>
     </section>
   </main>
 

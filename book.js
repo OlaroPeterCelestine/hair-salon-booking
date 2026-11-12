@@ -177,8 +177,8 @@ function enrichServices() {
 
 function renderCategories() {
   const track = document.getElementById("catTrack");
-  track.innerHTML = CATEGORIES.map((c) => `
-    <button type="button" class="cat-card" data-filter="${c.filter}">
+  track.innerHTML = CATEGORIES.map((c, i) => `
+    <button type="button" class="cat-card" data-filter="${c.filter}" style="--d:${i * 0.08}s">
       <div class="cat-img"><img src="${c.image}" alt="${c.name}" loading="lazy" /></div>
       <strong>${c.name}</strong>
     </button>
@@ -191,6 +191,7 @@ function renderCategories() {
     });
   });
   document.getElementById("catPage").textContent = `${catPage + 1}/${CATEGORIES.length}`;
+  observeMotionItems(track.querySelectorAll(".cat-card"));
 }
 
 function renderServiceFilter() {
@@ -214,8 +215,8 @@ function renderOffers() {
   document.getElementById("footerSalon").textContent = salon;
   document.getElementById("filterSalon").innerHTML = `<option value="${salon}">${salon}</option>`;
 
-  document.getElementById("offerGrid").innerHTML = list.map((s) => `
-    <article class="offer-card" data-service="${s.name}">
+  document.getElementById("offerGrid").innerHTML = list.map((s, i) => `
+    <article class="offer-card" data-service="${s.name}" style="--d:${(i % 6) * 0.07}s">
       <div class="offer-media">
         ${s.discount ? `<span class="offer-badge">${s.discount}</span>` : ""}
         <button type="button" class="offer-fav" aria-label="Save" data-fav="${s.name}">♡</button>
@@ -243,9 +244,11 @@ function renderOffers() {
   document.querySelectorAll("[data-fav]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      btn.textContent = btn.textContent === "♡" ? "♥" : "♡";
+      btn.classList.toggle("liked");
+      btn.textContent = btn.classList.contains("liked") ? "♥" : "♡";
     });
   });
+  observeMotionItems(document.querySelectorAll(".offer-card"));
 }
 
 function setBookStep(step) {
@@ -439,11 +442,47 @@ function fillConfirmBox() {
   `;
 }
 
+let motionObserver = null;
+
+function observeMotionItems(nodes) {
+  if (!motionObserver) {
+    motionObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-in");
+          motionObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+    );
+  }
+  nodes.forEach((el) => motionObserver.observe(el));
+}
+
+function initReveals() {
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("in");
+        io.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+  );
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+}
+
 /* Init */
 loadStore();
 renderCategories();
 renderServiceFilter();
 renderOffers();
+requestAnimationFrame(() => {
+  document.body.classList.add("page-enter");
+  initReveals();
+});
 
 document.getElementById("searchForm").addEventListener("submit", (e) => {
   e.preventDefault();
