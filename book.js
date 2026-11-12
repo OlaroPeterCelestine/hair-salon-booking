@@ -232,42 +232,6 @@ function setBookStep(step) {
   });
 }
 
-function renderAvailabilityBoard() {
-  const salon = store.settingsState?.salonName || "Hair. Kampala";
-  document.getElementById("availSalon").textContent = salon;
-  const board = document.getElementById("availBoard");
-  const stylists = getAllStylists();
-  board.innerHTML = stylists.map((s) => {
-    const opens = openSlots(s);
-    return `
-      <article class="avail-card">
-        <div class="avail-top">
-          <img src="${s.avatar}" alt="" />
-          <div>
-            <strong>${s.name}</strong>
-            <span>${opens.length} open · ${(s.tags || []).join(" · ")}</span>
-          </div>
-        </div>
-        <div class="avail-slots">
-          ${opens.length
-            ? opens.map((slot) => `<button type="button" class="avail-slot" data-stylist="${s.name}" data-slot="${slot.t}">${slot.t}</button>`).join("")
-            : `<span class="avail-empty">No open slots right now</span>`}
-        </div>
-      </article>
-    `;
-  }).join("");
-
-  board.querySelectorAll(".avail-slot").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const defaultService =
-        document.getElementById("filterService").value !== "all"
-          ? document.getElementById("filterService").value
-          : (store.services[0]?.name || "Women's Haircut");
-      openBookModal(defaultService, { stylist: btn.dataset.stylist, slot: btn.dataset.slot });
-    });
-  });
-}
-
 function openBookModal(serviceName, preset = {}) {
   if (store.settingsState?.onlineBooking === false) {
     toast("Online booking is disabled by the salon");
@@ -424,7 +388,6 @@ function submitBooking(e) {
   markSlotBooked(stylistName, slotTime);
   saveStore();
   document.getElementById("bookModal").hidden = true;
-  renderAvailabilityBoard();
   toast(`Confirmed · ${serviceName} with ${stylistName} at ${slotTime}`);
 }
 
@@ -456,12 +419,11 @@ loadStore();
 renderCategories();
 renderServiceFilter();
 renderOffers();
-renderAvailabilityBoard();
 
 document.getElementById("searchForm").addEventListener("submit", (e) => {
   e.preventDefault();
   renderOffers();
-  document.getElementById("availability").scrollIntoView({ behavior: "smooth" });
+  document.getElementById("offerings").scrollIntoView({ behavior: "smooth" });
 });
 document.getElementById("filterCategory").addEventListener("change", () => {
   renderServiceFilter();
